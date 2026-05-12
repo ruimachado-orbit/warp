@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warp - Autonomous Customer Support Agent</title>
-    <meta name="description" content="Autonomous customer support operations agent built in the Axeng style. It connects to common helpdesk/CRM systems, classifies tickets, routes work, drafts replies, searches knowledge, and keeps support operations disciplined.">
+    <title>Warp – Autonomous Customer Support Agent</title>
+    <meta name="description" content="Autonomous customer support operations agent. Drop into existing pipelines or run standalone across 8+ helpdesk platforms.">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         * {
             margin: 0;
@@ -13,279 +14,883 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #05070d;
+            color: #f1f5f9;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background effects */
+        .bg-layer {
+            position: fixed;
+            inset: 0;
+            z-index: -10;
+            background: radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.15), transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.08), transparent 40%),
+                        linear-gradient(180deg, #05070d 0%, #071018 45%, #030507 100%);
+        }
+
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -9;
+            opacity: 0.08;
+            background-image: linear-gradient(rgba(148, 163, 184, 0.1) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(148, 163, 184, 0.1) 1px, transparent 1px);
+            background-size: 56px 56px;
+        }
+
+        .glow-top {
+            position: fixed;
+            left: 50%;
+            top: 4rem;
+            height: 420px;
+            width: 720px;
+            transform: translateX(-50%);
+            border-radius: 100%;
+            background: rgba(6, 182, 212, 0.06);
+            filter: blur(80px);
+            z-index: -8;
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(5, 7, 13, 0.7);
+            backdrop-filter: blur(12px);
+        }
+
+        .header-container {
+            max-width: 80rem;
+            margin: 0 auto;
+            height: 4rem;
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            background: rgba(6, 182, 212, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            font-weight: bold;
+            color: #a5f3fc;
+            box-shadow: 0 0 28px rgba(6, 182, 212, 0.2);
         }
 
-        .container {
-            max-width: 900px;
-            background: white;
-            border-radius: 20px;
-            padding: 3rem;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        .logo-text {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: white;
+            letter-spacing: 0.05em;
+        }
+
+        .by-maio {
+            font-size: 0.875rem;
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .by-maio:hover {
+            color: #94a3b8;
+        }
+
+        .cta-button {
+            border-radius: 9999px;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            background: rgba(6, 182, 212, 0.1);
+            padding: 0.625rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #a5f3fc;
+            text-decoration: none;
+            box-shadow: 0 0 24px rgba(6, 182, 212, 0.12);
+            transition: all 0.2s;
+        }
+
+        .cta-button:hover {
+            background: rgba(6, 182, 212, 0.16);
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+            text-align: center;
+            min-height: calc(100vh - 4rem);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #a5f3fc;
+            margin-bottom: 1.75rem;
+        }
+
+        .status-dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 9999px;
+            background: #6ee7b7;
+            box-shadow: 0 0 16px rgba(110, 231, 183, 0.8);
         }
 
         h1 {
-            font-size: 2.5rem;
-            color: #667eea;
-            margin-bottom: 1rem;
+            max-width: 65rem;
+            font-size: clamp(2.5rem, 5vw, 5rem);
+            font-weight: 600;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            color: white;
+            margin-bottom: 1.75rem;
         }
 
-        .subtitle {
-            font-size: 1.25rem;
-            color: #666;
-            margin-bottom: 2rem;
+        .gradient-text {
+            background: linear-gradient(to right, #a5f3fc, #5eead4, #fde68a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .install-section {
-            background: #f7fafc;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            border-left: 4px solid #667eea;
+        .hero-description {
+            max-width: 48rem;
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: #cbd5e1;
+            margin-bottom: 2.25rem;
         }
 
-        .install-section h2 {
-            color: #667eea;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2.25rem;
         }
 
-        pre {
-            background: #2d3748;
-            color: #fff;
-            padding: 1rem;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 1rem 0;
-            font-size: 0.9rem;
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-radius: 9999px;
+            background: #a5f3fc;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #0f172a;
+            text-decoration: none;
+            box-shadow: 0 0 42px rgba(6, 182, 212, 0.24);
+            transition: all 0.2s;
         }
 
-        code {
-            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+        .btn-primary:hover {
+            background: #67e8f9;
         }
 
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #e2e8f0;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            border-color: rgba(255, 255, 255, 0.24);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .proof-points {
+            display: flex;
             gap: 1.5rem;
-            margin: 2rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+            font-size: 0.875rem;
+            color: #cbd5e1;
+            margin-bottom: 4rem;
         }
 
-        .feature {
+        .proof-point {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Terminal Section */
+        .terminal {
+            width: 100%;
+            max-width: 80rem;
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.7);
+            padding: 0.75rem;
+            box-shadow: 0 20px 60px rgba(6, 182, 212, 0.15);
+            backdrop-filter: blur(12px);
+        }
+
+        .terminal-inner {
+            border-radius: 1.4rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #070b12;
             padding: 1.5rem;
-            background: #f7fafc;
-            border-radius: 10px;
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .terminal-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .live-badge {
+            border-radius: 9999px;
+            border: 1px solid rgba(110, 231, 183, 0.2);
+            background: rgba(110, 231, 183, 0.1);
+            padding: 0.25rem 0.625rem;
+            font-size: 0.75rem;
+            color: #6ee7b7;
+        }
+
+        .command-grid {
+            display: grid;
+            gap: 0.75rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .command-card {
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+        }
+
+        .command {
+            color: #a5f3fc;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+        }
+
+        .command-output {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        /* Section styles */
+        .section {
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section-header {
             text-align: center;
+            margin-bottom: 3.5rem;
         }
 
-        .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #fde68a;
+            margin-bottom: 1rem;
         }
 
-        .feature h3 {
-            color: #667eea;
-            margin-bottom: 0.5rem;
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3.75rem);
+            font-weight: 600;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            color: white;
+            max-width: 48rem;
+            margin: 0 auto;
         }
 
+        .section-description {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: #cbd5e1;
+            max-width: 48rem;
+            margin: 1.5rem auto 0;
+        }
+
+        /* Grid layouts */
+        .grid-2 {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        }
+
+        .grid-3 {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .grid-4 {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+
+        /* Card styles */
+        .card {
+            border-radius: 1.6rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.035);
+            padding: 1.5rem;
+            backdrop-filter: blur(8px);
+            transition: all 0.2s;
+        }
+
+        .card:hover {
+            border-color: rgba(6, 182, 212, 0.25);
+            background: rgba(255, 255, 255, 0.055);
+            transform: translateY(-2px);
+        }
+
+        .card-icon {
+            width: 2.75rem;
+            height: 2.75rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            background: rgba(6, 182, 212, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a5f3fc;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 24px rgba(6, 182, 212, 0.1);
+        }
+
+        .card-number {
+            font-size: 0.875rem;
+            color: rgba(6, 182, 212, 0.6);
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-body {
+            font-size: 0.875rem;
+            line-height: 1.7;
+            color: #94a3b8;
+        }
+
+        /* Integration badges */
         .integrations {
             display: flex;
             flex-wrap: wrap;
             gap: 0.75rem;
-            margin: 1.5rem 0;
             justify-content: center;
-        }
-
-        .integration-badge {
-            background: #edf2f7;
-            color: #667eea;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: inline-block;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #edf2f7;
-            color: #667eea;
-        }
-
-        footer {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid #e2e8f0;
-            text-align: center;
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .capabilities {
-            background: #f7fafc;
-            border-radius: 10px;
-            padding: 1.5rem;
             margin: 2rem 0;
         }
 
-        .capabilities h2 {
-            color: #667eea;
-            margin-bottom: 1rem;
+        .integration-badge {
+            border-radius: 9999px;
+            background: rgba(226, 232, 240, 0.1);
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .capabilities ul {
-            list-style: none;
-            padding: 0;
+        /* Split section */
+        .split-section {
+            display: grid;
+            gap: 2.5rem;
+            grid-template-columns: 1fr;
+            align-items: start;
         }
 
-        .capabilities li {
-            padding: 0.5rem 0;
-            padding-left: 1.5rem;
-            position: relative;
+        @media (min-width: 1024px) {
+            .split-section {
+                grid-template-columns: 0.9fr 1.1fr;
+            }
         }
 
-        .capabilities li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #667eea;
-            font-weight: bold;
+        /* Footer */
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem 2rem;
+        }
+
+        .footer-content {
+            max-width: 80rem;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-text {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .footer-link {
+            color: #06b6d4;
+            text-decoration: none;
+        }
+
+        .footer-link:hover {
+            color: #67e8f9;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            .hero-description {
+                font-size: 1rem;
+            }
+            .button-group {
+                flex-direction: column;
+                width: 100%;
+            }
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+            .proof-points {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🌀 Warp</h1>
-        <div class="subtitle">Autonomous Customer Support Operations Agent</div>
+    <div class="bg-layer"></div>
+    <div class="grid-overlay"></div>
+    <div class="glow-top"></div>
 
-        <div class="features">
-            <div class="feature">
-                <div class="feature-icon">🎯</div>
-                <h3>Smart Triage</h3>
-                <p>Automatically classify tickets by category, severity, sentiment, and priority</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">🤖</div>
-                <h3>AI-Powered</h3>
-                <p>LLM-driven responses with rule-based fallback</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">🔒</div>
-                <h3>Safe by Default</h3>
-                <p>Dry-run mode prevents accidental mutations</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">⚡</div>
-                <h3>Multi-Platform</h3>
-                <p>Works with 8+ major helpdesk systems</p>
+    <header>
+        <div class="header-container">
+            <div class="logo-group">
+                <a href="/" class="logo">
+                    <div class="logo-icon">W</div>
+                    <div class="logo-text">Warp</div>
+                </a>
+                <a href="https://maiolabs.ai" target="_blank" rel="noopener noreferrer" class="by-maio">by Maio Labs</a>
             </div>
         </div>
+    </header>
 
-        <div class="capabilities">
-            <h2>🚀 Capabilities</h2>
-            <ul>
-                <li>Ticket classification: category, severity, sentiment, priority</li>
-                <li>Smart routing to L1, L2, billing, privacy, integrations teams</li>
-                <li>Auto-draft customer replies and internal notes</li>
-                <li>Knowledge base search for macros and policies</li>
-                <li>SLA calculation and tracking</li>
-                <li>Multi-language support (EN, PT)</li>
-                <li>Safe execution with --execute flag requirement</li>
-            </ul>
+    <section class="hero">
+        <div class="badge">
+            <span class="status-dot"></span>
+            Support Operations Online
         </div>
 
-        <div class="install-section">
-            <h2>🔌 Supported Integrations</h2>
-            <div class="integrations">
-                <span class="integration-badge">Zendesk</span>
-                <span class="integration-badge">Intercom</span>
-                <span class="integration-badge">Freshdesk</span>
-                <span class="integration-badge">Salesforce</span>
-                <span class="integration-badge">HubSpot</span>
-                <span class="integration-badge">Jira</span>
-                <span class="integration-badge">Front</span>
-                <span class="integration-badge">Help Scout</span>
-                <span class="integration-badge">Slack</span>
-                <span class="integration-badge">Notion</span>
+        <h1>
+            Autonomous support ops. <span class="gradient-text">Zero manual triage.</span>
+        </h1>
+
+        <p class="hero-description">
+            Warp is an AI-powered customer support operations agent. Drop it into your existing pipeline or run it standalone — it watches tickets across 8+ platforms, classifies instantly, routes intelligently, drafts replies, and keeps your support machine disciplined.
+        </p>
+
+        <div class="button-group">
+            <a href="#use-cases" class="btn-primary">
+                See use cases <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+            </a>
+            <a href="mailto:hello@maiolabs.ai" class="btn-secondary">
+                Contact us
+            </a>
+        </div>
+
+        <div class="proof-points">
+            <div class="proof-point">
+                <i data-lucide="check-circle-2" style="width: 16px; height: 16px; color: #6ee7b7;"></i>
+                Instant triage across 8+ platforms
+            </div>
+            <div class="proof-point">
+                <i data-lucide="check-circle-2" style="width: 16px; height: 16px; color: #6ee7b7;"></i>
+                Rule-based + LLM hybrid intelligence
+            </div>
+            <div class="proof-point">
+                <i data-lucide="check-circle-2" style="width: 16px; height: 16px; color: #6ee7b7;"></i>
+                Safe by default (dry-run mode)
             </div>
         </div>
 
-        <div class="install-section">
-            <h2>🚀 Quick Install</h2>
-            <pre><code># Via Homebrew (coming soon)
-brew tap maio-labs/tap
-brew install warp
+        <div class="terminal">
+            <div class="terminal-inner">
+                <div class="terminal-header">
+                    <div class="terminal-title">
+                        <i data-lucide="terminal" style="width: 16px; height: 16px; color: #a5f3fc;"></i>
+                        warp terminal
+                    </div>
+                    <div class="live-badge">live signals</div>
+                </div>
+                <div class="command-grid">
+                    <div class="command-card">
+                        <code class="command">$ warp chat</code>
+                        <p class="command-output">💬 Interactive agent mode - Ask me anything about tickets, classify, route, or draft replies</p>
+                    </div>
+                    <div class="command-card">
+                        <code class="command">$ warp classify "Customer can't login to dashboard"</code>
+                        <p class="command-output">→ access / high / neutral / SLA: 4h<br>Route: Identity & Account Support</p>
+                    </div>
+                    <div class="command-card">
+                        <code class="command">$ warp batch --zendesk status:new</code>
+                        <p class="command-output">Processing 47 new tickets...<br>✓ 47 classified, 12 critical, 8 require human review</p>
+                    </div>
+                    <div class="command-card">
+                        <code class="command">$ warp search kb "refund policy enterprise"</code>
+                        <p class="command-output">Found 3 matches in knowledge/policies/<br>→ Enterprise refunds require approval within 30 days</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-# Or via install script (coming soon)
-curl -fsSL https://raw.githubusercontent.com/maio-labs/warp/main/install.sh | bash</code></pre>
+    <section class="section">
+        <div class="section-header">
+            <p class="section-label">Ships with integrations for</p>
+        </div>
+        <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-top: 2.5rem;">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; border-radius: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02); padding: 1.5rem; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(255, 255, 255, 0.16)'; this.style.background='rgba(255, 255, 255, 0.04)'" onmouseout="this.style.borderColor='rgba(255, 255, 255, 0.08)'; this.style.background='rgba(255, 255, 255, 0.02)'">
+                <img src="https://cdn.simpleicons.org/zendesk/94a3b8" width="40" height="40" alt="Zendesk" style="opacity: 0.6;">
+                <span style="font-size: 0.75rem; font-weight: 500; color: #cbd5e1;">Zendesk</span>
+                <p style="font-size: 0.625rem; color: #64748b; text-align: center; line-height: 1.5; margin-top: 0.25rem;">Full ticket lifecycle</p>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; border-radius: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02); padding: 1.5rem; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(255, 255, 255, 0.16)'; this.style.background='rgba(255, 255, 255, 0.04)'" onmouseout="this.style.borderColor='rgba(255, 255, 255, 0.08)'; this.style.background='rgba(255, 255, 255, 0.02)'">
+                <img src="https://cdn.simpleicons.org/intercom/94a3b8" width="40" height="40" alt="Intercom" style="opacity: 0.6;">
+                <span style="font-size: 0.75rem; font-weight: 500; color: #cbd5e1;">Intercom</span>
+                <p style="font-size: 0.625rem; color: #64748b; text-align: center; line-height: 1.5; margin-top: 0.25rem;">Conversations & notes</p>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; border-radius: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02); padding: 1.5rem; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(255, 255, 255, 0.16)'; this.style.background='rgba(255, 255, 255, 0.04)'" onmouseout="this.style.borderColor='rgba(255, 255, 255, 0.08)'; this.style.background='rgba(255, 255, 255, 0.02)'">
+                <i data-lucide="headphones" style="width: 40px; height: 40px; color: #94a3b8;"></i>
+                <span style="font-size: 0.75rem; font-weight: 500; color: #cbd5e1;">Freshdesk</span>
+                <p style="font-size: 0.625rem; color: #64748b; text-align: center; line-height: 1.5; margin-top: 0.25rem;">Ticket management</p>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; border-radius: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02); padding: 1.5rem; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(255, 255, 255, 0.16)'; this.style.background='rgba(255, 255, 255, 0.04)'" onmouseout="this.style.borderColor='rgba(255, 255, 255, 0.08)'; this.style.background='rgba(255, 255, 255, 0.02)'">
+                <i data-lucide="cloud" style="width: 40px; height: 40px; color: #94a3b8;"></i>
+                <span style="font-size: 0.75rem; font-weight: 500; color: #cbd5e1;">Salesforce</span>
+                <p style="font-size: 0.625rem; color: #64748b; text-align: center; line-height: 1.5; margin-top: 0.25rem;">Service Cloud cases</p>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; border-radius: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02); padding: 1.5rem; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(255, 255, 255, 0.16)'; this.style.background='rgba(255, 255, 255, 0.04)'" onmouseout="this.style.borderColor='rgba(255, 255, 255, 0.08)'; this.style.background='rgba(255, 255, 255, 0.02)'">
+                <img src="https://cdn.simpleicons.org/hubspot/94a3b8" width="40" height="40" alt="HubSpot" style="opacity: 0.6;">
+                <span style="font-size: 0.75rem; font-weight: 500; color: #cbd5e1;">HubSpot</span>
+                <p style="font-size: 0.625rem; color: #64748b; text-align: center; line-height: 1.5; margin-top: 0.25rem;">Service Hub tickets</p>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; border-radius: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02); padding: 1.5rem; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(255, 255, 255, 0.16)'; this.style.background='rgba(255, 255, 255, 0.04)'" onmouseout="this.style.borderColor='rgba(255, 255, 255, 0.08)'; this.style.background='rgba(255, 255, 255, 0.02)'">
+                <img src="https://cdn.simpleicons.org/jira/94a3b8" width="40" height="40" alt="Jira" style="opacity: 0.6;">
+                <span style="font-size: 0.75rem; font-weight: 500; color: #cbd5e1;">Jira</span>
+                <p style="font-size: 0.625rem; color: #64748b; text-align: center; line-height: 1.5; margin-top: 0.25rem;">Service Management</p>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; border-radius: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02); padding: 1.5rem; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(255, 255, 255, 0.16)'; this.style.background='rgba(255, 255, 255, 0.04)'" onmouseout="this.style.borderColor='rgba(255, 255, 255, 0.08)'; this.style.background='rgba(255, 255, 255, 0.02)'">
+                <i data-lucide="mail" style="width: 40px; height: 40px; color: #94a3b8;"></i>
+                <span style="font-size: 0.75rem; font-weight: 500; color: #cbd5e1;">Front</span>
+                <p style="font-size: 0.625rem; color: #64748b; text-align: center; line-height: 1.5; margin-top: 0.25rem;">Shared inbox</p>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; border-radius: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02); padding: 1.5rem; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(255, 255, 255, 0.16)'; this.style.background='rgba(255, 255, 255, 0.04)'" onmouseout="this.style.borderColor='rgba(255, 255, 255, 0.08)'; this.style.background='rgba(255, 255, 255, 0.02)'">
+                <img src="https://cdn.simpleicons.org/helpscout/94a3b8" width="40" height="40" alt="Help Scout" style="opacity: 0.6;">
+                <span style="font-size: 0.75rem; font-weight: 500; color: #cbd5e1;">Help Scout</span>
+                <p style="font-size: 0.625rem; color: #64748b; text-align: center; line-height: 1.5; margin-top: 0.25rem;">Customer support</p>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; border-radius: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02); padding: 1.5rem; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(255, 255, 255, 0.16)'; this.style.background='rgba(255, 255, 255, 0.04)'" onmouseout="this.style.borderColor='rgba(255, 255, 255, 0.08)'; this.style.background='rgba(255, 255, 255, 0.02)'">
+                <img src="https://cdn.simpleicons.org/slack/94a3b8" width="40" height="40" alt="Slack" style="opacity: 0.6;">
+                <span style="font-size: 0.75rem; font-weight: 500; color: #cbd5e1;">Slack</span>
+                <p style="font-size: 0.625rem; color: #64748b; text-align: center; line-height: 1.5; margin-top: 0.25rem;">Team communication</p>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; border-radius: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(255, 255, 255, 0.02); padding: 1.5rem; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(255, 255, 255, 0.16)'; this.style.background='rgba(255, 255, 255, 0.04)'" onmouseout="this.style.borderColor='rgba(255, 255, 255, 0.08)'; this.style.background='rgba(255, 255, 255, 0.02)'">
+                <img src="https://cdn.simpleicons.org/notion/94a3b8" width="40" height="40" alt="Notion" style="opacity: 0.6;">
+                <span style="font-size: 0.75rem; font-weight: 500; color: #cbd5e1;">Notion</span>
+                <p style="font-size: 0.625rem; color: #64748b; text-align: center; line-height: 1.5; margin-top: 0.25rem;">Knowledge base</p>
+            </div>
+        </div>
+        <p style="margin-top: 2rem; text-align: center; font-size: 0.875rem; color: #64748b;">
+            Need more integrations? <a href="https://maiolabs.ai" target="_blank" rel="noopener noreferrer" class="footer-link">Maio Labs</a> can build custom connectors for your stack.
+        </p>
+    </section>
+
+    <section id="use-cases" class="section">
+        <div class="split-section">
+            <div>
+                <p class="section-label">The Real Problem</p>
+                <h2 class="section-title">
+                    Support teams drown in repetitive classification work instead of solving customer problems.
+                </h2>
+            </div>
+            <p class="section-description" style="margin-top: 0;">
+                Warp doesn't replace your support team. It removes the repetitive triage, routing, and drafting work that keeps agents away from the conversations that actually need human judgment.
+            </p>
         </div>
 
-        <div class="install-section">
-            <h2>📦 Manual Install</h2>
-            <pre><code>git clone https://github.com/ruimachado-orbit/warp.git
-cd warp
-make setup
-make dev</code></pre>
+        <div class="grid-3" style="margin-top: 3rem;">
+            <div class="card">
+                <div class="card-number">01</div>
+                <h3 class="card-title">First response is always delayed</h3>
+                <p class="card-body">Tickets sit unclassified in the general queue while agents manually read, categorize, tag, set priority, and route — meanwhile, critical issues age.</p>
+            </div>
+            <div class="card">
+                <div class="card-number">02</div>
+                <h3 class="card-title">Routing is guesswork</h3>
+                <p class="card-body">Misrouted tickets bounce between L1, L2, billing, and integrations teams. By the time it reaches the right person, the SLA is blown.</p>
+            </div>
+            <div class="card">
+                <div class="card-number">03</div>
+                <h3 class="card-title">Knowledge sits unused</h3>
+                <p class="card-body">Your team has macros, FAQs, and policies in Notion or Markdown, but agents rewrite the same answers manually because search is too slow.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-header">
+            <p class="section-label">Real Use Cases</p>
+            <h2 class="section-title">Built for the work that keeps support moving.</h2>
+        </div>
+        <div class="grid-3">
+            <div class="card">
+                <div class="card-icon">
+                    <i data-lucide="zap" style="width: 20px; height: 20px;"></i>
+                </div>
+                <h3 class="card-title">Overnight queue triage</h3>
+                <p class="card-body">Schedule Warp to run every hour. It classifies all new tickets, tags by category/severity, sets SLA timers, and routes to the right queue — so your morning standup starts with organized work.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i data-lucide="git-pull-request" style="width: 20px; height: 20px;"></i>
+                </div>
+                <h3 class="card-title">Webhook-triggered classification</h3>
+                <p class="card-body">Connect Warp to your helpdesk webhook. Every new ticket triggers classification + draft reply generation in real-time, delivered back via API for agent review.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i data-lucide="search" style="width: 20px; height: 20px;"></i>
+                </div>
+                <h3 class="card-title">Knowledge-augmented replies</h3>
+                <p class="card-body">Warp searches your local knowledge base (FAQs, policies, macros) and injects relevant snippets into draft replies — agents just review and send.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i data-lucide="shield-check" style="width: 20px; height: 20px;"></i>
+                </div>
+                <h3 class="card-title">Escalation detection</h3>
+                <p class="card-body">Automatically flag high-severity + negative sentiment tickets for immediate human review. Prevents critical customer issues from sitting in the queue.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i data-lucide="bar-chart-3" style="width: 20px; height: 20px;"></i>
+                </div>
+                <h3 class="card-title">Multi-brand routing</h3>
+                <p class="card-body">Run Warp across multiple brands or business units. Configure per-brand routing rules, SLA policies, and draft templates from a single deployment.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i data-lucide="globe" style="width: 20px; height: 20px;"></i>
+                </div>
+                <h3 class="card-title">Multilingual support</h3>
+                <p class="card-body">Detects language (EN/PT, expandable), generates replies in the customer's language, and routes to language-specific teams automatically.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: rgba(6, 182, 212, 0.02); border-top: 1px solid rgba(6, 182, 212, 0.1); border-bottom: 1px solid rgba(6, 182, 212, 0.1);">
+        <div class="section-header">
+            <p class="section-label">Integration & Extensibility</p>
+            <h2 class="section-title">Drop into your existing pipeline or build custom workflows.</h2>
+            <p class="section-description">
+                Warp is designed to fit your operations, not replace them. Run it standalone, plug it into webhooks, call it from CI/CD, or build custom tools on top of the orchestrator.
+            </p>
         </div>
 
-        <div class="install-section">
-            <h2>⚡ Quick Start</h2>
-            <pre><code># Interactive chat mode
-make chat
+        <div class="grid-2" style="margin-top: 3rem;">
+            <div class="card">
+                <div class="card-icon">
+                    <i data-lucide="plug" style="width: 20px; height: 20px;"></i>
+                </div>
+                <h3 class="card-title">Webhook & API Integration</h3>
+                <p class="card-body">
+                    Call Warp from Zendesk triggers, Zapier workflows, or custom webhooks. POST ticket text, get back JSON with classification, routing, SLA, tags, and draft reply. Fits into any automation stack.
+                </p>
+                <div class="command-card" style="margin-top: 1rem;">
+                    <code class="command" style="font-size: 0.75rem;">POST /triage<br>{"text": "..."}<br>→ {category, severity, draft_reply}</code>
+                </div>
+            </div>
 
-# Single query
-make query Q="how do I reset my password?"
+            <div class="card">
+                <div class="card-icon">
+                    <i data-lucide="code-2" style="width: 20px; height: 20px;"></i>
+                </div>
+                <h3 class="card-title">Custom Tool Development</h3>
+                <p class="card-body">
+                    Extend Warp with your own Python tools. Add custom integrations, build domain-specific classifiers, or connect to internal APIs. Orchestrator auto-discovers and routes to new tools.
+                </p>
+                <div class="command-card" style="margin-top: 1rem;">
+                    <code class="command" style="font-size: 0.75rem;">src/tools/my_crm_tool.py<br>→ Auto-registered in orchestrator</code>
+                </div>
+            </div>
 
-# Triage a ticket (rule-based, no LLM needed)
-make triage T="customer says production is down"
+            <div class="card">
+                <div class="card-icon">
+                    <i data-lucide="terminal" style="width: 20px; height: 20px;"></i>
+                </div>
+                <h3 class="card-title">CLI & Script Automation</h3>
+                <p class="card-body">
+                    Run Warp from cron, GitHub Actions, or your deploy pipeline. Batch-process tickets, generate morning reports, or trigger triage on schedule. Exit codes and JSON output make it scriptable.
+                </p>
+                <div class="command-card" style="margin-top: 1rem;">
+                    <code class="command" style="font-size: 0.75rem;">0 */2 * * * warp batch-triage<br># Every 2 hours, classify new tickets</code>
+                </div>
+            </div>
 
-# Check integration status
-make status</code></pre>
+            <div class="card">
+                <div class="card-icon">
+                    <i data-lucide="database" style="width: 20px; height: 20px;"></i>
+                </div>
+                <h3 class="card-title">Bring Your Own Stack</h3>
+                <p class="card-body">
+                    Self-hosted on your infrastructure. Bring your own LLM (Anthropic, OpenAI, local models), helpdesk credentials, and knowledge base. No vendor lock-in, no data leaves your control.
+                </p>
+                <div class="command-card" style="margin-top: 1rem;">
+                    <code class="command" style="font-size: 0.75rem;">.env: ANTHROPIC_API_KEY, ZENDESK_TOKEN<br>config.yaml: routing rules, SLA policy</code>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-header">
+            <p class="section-label">How It Works</p>
+            <h2 class="section-title">From raw ticket to routed, classified, draft-ready work.</h2>
         </div>
 
-        <div class="links">
-            <a href="https://github.com/ruimachado-orbit/warp" class="btn btn-primary">View on GitHub</a>
-            <a href="https://github.com/ruimachado-orbit/warp/blob/main/README.md" class="btn btn-secondary">Documentation</a>
-            <a href="https://github.com/ruimachado-orbit/warp/blob/main/TEST_REPORT.md" class="btn btn-secondary">Test Report</a>
-            <a href="https://github.com/ruimachado-orbit/warp/issues" class="btn btn-secondary">Report Issue</a>
+        <div class="grid-4" style="margin-top: 3rem;">
+            <div class="card">
+                <div style="display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: 9999px; background: #a5f3fc; color: #0f172a; font-weight: bold; margin-bottom: 1rem; box-shadow: 0 0 28px rgba(6, 182, 212, 0.24);">1</div>
+                <h3 class="card-title">Observe</h3>
+                <p class="card-body">Ingest tickets from Zendesk, Intercom, Freshdesk, or via API. Pull metadata, customer history, and conversation threads.</p>
+            </div>
+            <div class="card">
+                <div style="display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: 9999px; background: #a5f3fc; color: #0f172a; font-weight: bold; margin-bottom: 1rem; box-shadow: 0 0 28px rgba(6, 182, 212, 0.24);">2</div>
+                <h3 class="card-title">Classify</h3>
+                <p class="card-body">Run rule-based + LLM classification. Extract category (billing, bug, access), severity (critical→low), sentiment, and language.</p>
+            </div>
+            <div class="card">
+                <div style="display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: 9999px; background: #a5f3fc; color: #0f172a; font-weight: bold; margin-bottom: 1rem; box-shadow: 0 0 28px rgba(6, 182, 212, 0.24);">3</div>
+                <h3 class="card-title">Route & Draft</h3>
+                <p class="card-body">Map to queue (L1, L2, billing, integrations), set SLA timer, generate draft reply from knowledge base, and flag for human review if needed.</p>
+            </div>
+            <div class="card">
+                <div style="display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: 9999px; background: #a5f3fc; color: #0f172a; font-weight: bold; margin-bottom: 1rem; box-shadow: 0 0 28px rgba(6, 182, 212, 0.24);">4</div>
+                <h3 class="card-title">Execute</h3>
+                <p class="card-body">Return dry-run preview for review, or execute mutations with --execute flag. Update tickets, post drafts, send Slack alerts, log to analytics.</p>
+            </div>
         </div>
+    </section>
 
-        <footer>
-            <p>Built with ❤️ using <a href="https://github.com/anthropics/agent-factory" style="color: #667eea;">Agent Factory</a></p>
-            <p>© 2026 Maio Labs. MIT License.</p>
-        </footer>
-    </div>
+    <section class="section">
+        <div class="section-header">
+            <p class="section-label">Results</p>
+        </div>
+        <div class="grid-4">
+            <div class="card">
+                <div style="font-size: 2rem; font-weight: 600; color: white; margin-bottom: 0.5rem;">15/15</div>
+                <p class="card-body">tests passing with 100% classification accuracy on core categories</p>
+            </div>
+            <div class="card">
+                <div style="font-size: 2rem; font-weight: 600; color: white; margin-bottom: 0.5rem;">&lt; 500ms</div>
+                <p class="card-body">end-to-end triage without LLM, rule-based fallback always available</p>
+            </div>
+            <div class="card">
+                <div style="font-size: 2rem; font-weight: 600; color: white; margin-bottom: 0.5rem;">8+</div>
+                <p class="card-body">major helpdesk platforms supported out of the box, extensible to any API</p>
+            </div>
+            <div class="card">
+                <div style="font-size: 2rem; font-weight: 600; color: white; margin-bottom: 0.5rem;">MIT</div>
+                <p class="card-body">open source, auditable, self-hosted — no vendor lock-in, you own the stack</p>
+            </div>
+        </div>
+    </section>
+
+
+    <footer>
+        <div class="footer-content">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 2rem; height: 2rem; border-radius: 0.5rem; background: rgba(6, 182, 212, 0.1); display: flex; align-items: center; justify-content: center; color: #a5f3fc;">W</div>
+                <span style="font-weight: 600; color: white;">Warp</span>
+            </div>
+            <p class="footer-text">
+                Built with ❤️ using <a href="https://github.com/anthropics/agent-factory" class="footer-link">Agent Factory</a>
+            </p>
+            <p class="footer-text">
+                © 2026 <a href="https://maiolabs.ai" target="_blank" rel="noopener noreferrer" class="footer-link">Maio Labs</a>. MIT License.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
