@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Warp – Autonomous Customer Support Agent</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Warp</h1>
+    <p>AI‑powered autonomous support operations for modern businesses.</p>
+    <a href="#features" class="cta">Explore Features</a>
+  </header>
+  <section id="features">
+    <h2>Key Features</h2>
+    <ul>
+      <li>Instant ticket triage & routing across Zendesk, Intercom, Freshdesk, Salesforce, HubSpot, Jira, Front, Help Scout</li>
+      <li>Rule‑based classification with optional LLM‑draft replies</li>
+      <li>Knowledge‑base search & macro generation</li>
+      <li>Safe dry‑run mode – mutations require explicit <code>--execute</code></li>
+      <li>Slack & Notion integration for escalation and documentation</li>
+    </ul>
+  </section>
+  <section id="demo">
+    <h2>Try it now</h2>
+    <p>Clone the repo and run a quick triage:</p>
+    <pre><code>git clone git@github.com:ruimachado-orbit/warp.git
+cd warp
+./setup.sh   # creates venv, installs deps
+python3 src/orchestrator.py "triage: production outage affecting all users"
+</code></pre>
+  </section>
+  <footer>
+    <p>&copy; 2026 Maio Labs – All rights reserved.</p>
+  </footer>
+</body>
+</html>
