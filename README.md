@@ -1,162 +1,101 @@
 # Axsupport
 
-Autonomous customer support operations agent for triage, classification, routing, drafting, knowledge lookup, SLA management, and helpdesk automation.
+Autonomous customer support operations agent built in the Axeng style. It connects to common helpdesk/CRM systems, classifies tickets, routes work, drafts replies, searches knowledge, and keeps support operations disciplined.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Python](https://img.shields.io/badge/python-3.12%2B-blue)](https://www.python.org/)
+## What it does
 
-**Autonomous AI agent built with the Axeng architecture.**
+- Triage: category, severity, sentiment, priority, SLA, tags, queue.
+- Classification: billing, bug, access, how-to, feature request, privacy, integration, general.
+- Routing: L1, L2 technical support, billing, privacy/legal, product feedback, integrations.
+- Drafting: safe customer replies and internal notes.
+- Knowledge: local Markdown KB search for macros, policy, troubleshooting.
+- Helpdesk operations: search/read/update patterns for major support systems.
+- Safe execution: external mutations default to dry-run unless called with `--execute`.
 
-> Self-hosted, open source, no cloud dependencies. Runs on any machine.
+## Supported systems
 
----
+Primary systems:
 
-## ⚡ Quick Start
+- Zendesk Support
+- Intercom
+- Freshdesk
+- Salesforce Service Cloud
+- HubSpot Service Hub
+- Jira Service Management
+- Front
+- Help Scout
 
-### Prerequisites
+Collaboration / knowledge:
 
-- Python 3.12+
-- 3 LLM provider API key(s): anthropic, openai, openrouter
+- Slack
+- Notion
+- Local Markdown KB under `knowledge/`
 
-### Install
+## Quick start
 
 ```bash
-# Clone
-git clone <your-repo-url>
-cd axsupport
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Configure
+cd /Users/axevoid/Code/axsupport
 cp .env.example .env
-# Edit .env with your API keys
-
 cp config/config.yaml.example config/config.yaml
-# Edit config/config.yaml
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python3 src/orchestrator.py --no-llm "triage: customer says production is down and all users are blocked"
 ```
 
-
-### Run
+## Example commands
 
 ```bash
-# Interactive chat
-python3 bin/axsupport-cli chat
+# Rule-based triage without LLM
+python3 src/orchestrator.py --no-llm "triage this Zendesk ticket: invoice charge is wrong and customer is angry"
 
-# Query
-python3 src/orchestrator.py "your query here"
+# Check Zendesk configuration
+python3 src/tools/zendesk_tool.py check
 
-# Status check
-python3 bin/axsupport-cli status
+# Search Zendesk tickets
+python3 src/tools/zendesk_tool.py search "type:ticket status<solved urgent"
+
+# Draft-only internal note for Zendesk; no mutation
+python3 src/tools/zendesk_tool.py note 12345 "Customer reports production outage. Routed critical to L2."
+
+# Actually write the note after review
+python3 src/tools/zendesk_tool.py note 12345 "Customer reports production outage. Routed critical to L2." --execute
+
+# Search local knowledge base
+python3 src/tools/knowledge_tool.py search "refund policy enterprise cancellation"
 ```
 
+## Tool map
 
----
+| Tool | File | Purpose |
+|---|---|---|
+| support triage | `src/tools/support_triage.py` | category/severity/sentiment/SLA/routing/draft |
+| knowledge | `src/tools/knowledge_tool.py` | local Markdown KB search |
+| Zendesk | `src/tools/zendesk_tool.py` | tickets, comments, replies |
+| Intercom | `src/tools/intercom_tool.py` | conversations, notes, replies |
+| Freshdesk | `src/tools/freshdesk_tool.py` | tickets, notes, replies |
+| Salesforce Service | `src/tools/salesforce_service_tool.py` | Cases |
+| HubSpot Service | `src/tools/hubspot_service_tool.py` | tickets |
+| Jira Service | `src/tools/jira_service_tool.py` | requests/issues |
+| Front | `src/tools/front_tool.py` | conversations |
+| Help Scout | `src/tools/helpscout_tool.py` | conversations |
 
-## 🎯 Features
+## Safety model
 
+- Read/search/check actions can run directly.
+- Write actions (`reply`, `note`, `comment`, `update`) return `dry_run: true` by default.
+- To mutate an external system, pass `--execute` directly to the specific tool after reviewing payload.
+- Never put secrets in chat or commit `.env`.
 
-### Intelligent Orchestration
-- Natural language query routing
-- Automatic tool selection
-- Multi-provider LLM synthesis with fallback
-- Context-aware responses
+## Configuration
 
+Use `.env.example` for required credentials and `config/config.yaml.example` for queues, SLA defaults, provider order, and integration toggles.
 
-### Integrations
+## Roadmap
 
-- **Slack** — Ready to use
-- **Notion** — Ready to use
-
-### LLM Providers
-
-- **Anthropic Claude** — Automatic fallback
-- **OpenAI** — Automatic fallback
-- **OpenRouter** — Automatic fallback
-
----
-
-## 📋 Configuration
-
-### Environment Variables
-
-```bash
-# .env
-
-SLACK_BOT_TOKEN=your_key_here
-SLACK_APP_TOKEN=your_key_here
-NOTION_TOKEN=your_key_here
-ANTHROPIC_API_KEY=your_key_here
-OPENAI_API_KEY=your_key_here
-OPENROUTER_API_KEY=your_key_here
-```
-
-### Config File
-
-```yaml
-# config/config.yaml
-
-
-
-
-llm:
-  providers: ['anthropic', 'openai', 'openrouter']
-  default: anthropic
-  max_tokens: 4096
-  temperature: 0.7
-```
-
----
-
-## 🏗️ Architecture
-
-```
-axsupport/
-├── src/
-│   ├── orchestrator.py         # NL query router + tool executor
-│   ├── llm_gateway.py          # Multi-provider LLM client
-│   ├── config.py               # Unified config loader
-│   └── tools/                  # Integration tools
-
-│       ├── slack_tool.py
-│       ├── notion_tool.py
-
-├── skills/                     # Claude Code skills
-│   └── example-skill/
-│       └── SKILL.md
-
-
-├── bin/
-│   └── axsupport-cli    # CLI interface
-
-└── config/
-    ├── config.yaml             # Agent configuration
-    └── tools.yaml              # Tool registry
-```
-
----
-
-## 🤝 Contributing
-
-```bash
-git checkout -b feat/your-feature
-# Make changes
-git commit -m "feat: your feature"
-git push origin feat/your-feature
-# Open PR
-```
-
----
-
-## 📄 License
-
-MIT © 2026
-
----
-
-## 🙏 Credits
-
-Built with:
-- [Axeng](https://github.com/ruimachado-orbit/axeng) — Agent architecture
-- [Claude Code](https://claude.ai/code) — AI development
-- [Agent Factory](https://github.com/maio-labs/sapiens) — Project scaffolding
+- OAuth flows for providers that support them.
+- Incident clustering across tickets.
+- CSAT/churn-risk dashboard.
+- Macro performance analytics.
+- Multi-brand routing rules.
+- Human approval queue UI.

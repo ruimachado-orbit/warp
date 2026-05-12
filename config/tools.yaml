@@ -1,0 +1,31 @@
+tools:
+  support_triage:
+    script: src/tools/support_triage.py
+    description: Classify, prioritize, route, SLA, tags, and draft replies.
+  knowledge:
+    script: src/tools/knowledge_tool.py
+    description: Search local KB docs and macros.
+  zendesk:
+    script: src/tools/zendesk_tool.py
+    env: [ZENDESK_SUBDOMAIN, ZENDESK_EMAIL, ZENDESK_API_TOKEN]
+  intercom:
+    script: src/tools/intercom_tool.py
+    env: [INTERCOM_ACCESS_TOKEN]
+  freshdesk:
+    script: src/tools/freshdesk_tool.py
+    env: [FRESHDESK_DOMAIN, FRESHDESK_API_KEY]
+  salesforce_service:
+    script: src/tools/salesforce_service_tool.py
+    env: [SALESFORCE_INSTANCE_URL, SALESFORCE_ACCESS_TOKEN]
+  hubspot_service:
+    script: src/tools/hubspot_service_tool.py
+    env: [HUBSPOT_ACCESS_TOKEN]
+  jira_service:
+    script: src/tools/jira_service_tool.py
+    env: [JIRA_BASE_URL, JIRA_EMAIL, JIRA_API_TOKEN, JIRA_SERVICE_PROJECT_KEY]
+  front:
+    script: src/tools/front_tool.py
+    env: [FRONT_API_TOKEN]
+  helpscout:
+    script: src/tools/helpscout_tool.py
+    env: [HELPSCOUT_ACCESS_TOKEN]

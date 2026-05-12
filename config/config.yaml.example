@@ -1,0 +1,50 @@
+agent:
+  name: axsupport
+  mode: support-ops
+
+llm:
+  providers: [anthropic, openai, openrouter]
+  default: anthropic
+  max_tokens: 4096
+  temperature: 0.2
+
+support:
+  default_language: en
+  safe_mode: true
+  mutate_requires_execute_flag: true
+  default_sla_hours:
+    critical: 1
+    high: 4
+    medium: 24
+    low: 72
+  queues:
+    billing: Billing / Finance Support
+    bug: Technical Support L2
+    access: Identity & Account Support
+    how_to: Customer Education / L1 Support
+    feature_request: Product Feedback Queue
+    data_privacy: Privacy / Legal Ops
+    integration: Integrations Support
+    general: Customer Support L1
+
+integrations:
+  zendesk:
+    enabled: true
+  intercom:
+    enabled: true
+  freshdesk:
+    enabled: true
+  salesforce_service:
+    enabled: true
+  hubspot_service:
+    enabled: true
+  jira_service:
+    enabled: true
+  front:
+    enabled: true
+  helpscout:
+    enabled: true
+  slack:
+    enabled: true
+  notion:
+    enabled: true
