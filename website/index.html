@@ -1,38 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Warp – Autonomous Customer Support Agent</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warp - Autonomous Customer Support Agent</title>
+    <meta name="description" content="Autonomous customer support operations agent built in the Axeng style. It connects to common helpdesk/CRM systems, classifies tickets, routes work, drafts replies, searches knowledge, and keeps support operations disciplined.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .install-section {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .install-section h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        pre {
+            background: #2d3748;
+            color: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        code {
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature {
+            padding: 1.5rem;
+            background: #f7fafc;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature h3 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .integrations {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+            justify-content: center;
+        }
+
+        .integration-badge {
+            background: #edf2f7;
+            color: #667eea;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #edf2f7;
+            color: #667eea;
+        }
+
+        footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .capabilities {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .capabilities h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .capabilities ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .capabilities li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .capabilities li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Warp</h1>
-    <p>AI‑powered autonomous support operations for modern businesses.</p>
-    <a href="#features" class="cta">Explore Features</a>
-  </header>
-  <section id="features">
-    <h2>Key Features</h2>
-    <ul>
-      <li>Instant ticket triage & routing across Zendesk, Intercom, Freshdesk, Salesforce, HubSpot, Jira, Front, Help Scout</li>
-      <li>Rule‑based classification with optional LLM‑draft replies</li>
-      <li>Knowledge‑base search & macro generation</li>
-      <li>Safe dry‑run mode – mutations require explicit <code>--execute</code></li>
-      <li>Slack & Notion integration for escalation and documentation</li>
-    </ul>
-  </section>
-  <section id="demo">
-    <h2>Try it now</h2>
-    <p>Clone the repo and run a quick triage:</p>
-    <pre><code>git clone git@github.com:ruimachado-orbit/warp.git
+    <div class="container">
+        <h1>🌀 Warp</h1>
+        <div class="subtitle">Autonomous Customer Support Operations Agent</div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <h3>Smart Triage</h3>
+                <p>Automatically classify tickets by category, severity, sentiment, and priority</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🤖</div>
+                <h3>AI-Powered</h3>
+                <p>LLM-driven responses with rule-based fallback</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <h3>Safe by Default</h3>
+                <p>Dry-run mode prevents accidental mutations</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>Multi-Platform</h3>
+                <p>Works with 8+ major helpdesk systems</p>
+            </div>
+        </div>
+
+        <div class="capabilities">
+            <h2>🚀 Capabilities</h2>
+            <ul>
+                <li>Ticket classification: category, severity, sentiment, priority</li>
+                <li>Smart routing to L1, L2, billing, privacy, integrations teams</li>
+                <li>Auto-draft customer replies and internal notes</li>
+                <li>Knowledge base search for macros and policies</li>
+                <li>SLA calculation and tracking</li>
+                <li>Multi-language support (EN, PT)</li>
+                <li>Safe execution with --execute flag requirement</li>
+            </ul>
+        </div>
+
+        <div class="install-section">
+            <h2>🔌 Supported Integrations</h2>
+            <div class="integrations">
+                <span class="integration-badge">Zendesk</span>
+                <span class="integration-badge">Intercom</span>
+                <span class="integration-badge">Freshdesk</span>
+                <span class="integration-badge">Salesforce</span>
+                <span class="integration-badge">HubSpot</span>
+                <span class="integration-badge">Jira</span>
+                <span class="integration-badge">Front</span>
+                <span class="integration-badge">Help Scout</span>
+                <span class="integration-badge">Slack</span>
+                <span class="integration-badge">Notion</span>
+            </div>
+        </div>
+
+        <div class="install-section">
+            <h2>🚀 Quick Install</h2>
+            <pre><code># Via Homebrew (coming soon)
+brew tap maio-labs/tap
+brew install warp
+
+# Or via install script (coming soon)
+curl -fsSL https://raw.githubusercontent.com/maio-labs/warp/main/install.sh | bash</code></pre>
+        </div>
+
+        <div class="install-section">
+            <h2>📦 Manual Install</h2>
+            <pre><code>git clone https://github.com/ruimachado-orbit/warp.git
 cd warp
-./setup.sh   # creates venv, installs deps
-python3 src/orchestrator.py "triage: production outage affecting all users"
-</code></pre>
-  </section>
-  <footer>
-    <p>&copy; 2026 Maio Labs – All rights reserved.</p>
-  </footer>
+make setup
+make dev</code></pre>
+        </div>
+
+        <div class="install-section">
+            <h2>⚡ Quick Start</h2>
+            <pre><code># Interactive chat mode
+make chat
+
+# Single query
+make query Q="how do I reset my password?"
+
+# Triage a ticket (rule-based, no LLM needed)
+make triage T="customer says production is down"
+
+# Check integration status
+make status</code></pre>
+        </div>
+
+        <div class="links">
+            <a href="https://github.com/ruimachado-orbit/warp" class="btn btn-primary">View on GitHub</a>
+            <a href="https://github.com/ruimachado-orbit/warp/blob/main/README.md" class="btn btn-secondary">Documentation</a>
+            <a href="https://github.com/ruimachado-orbit/warp/blob/main/TEST_REPORT.md" class="btn btn-secondary">Test Report</a>
+            <a href="https://github.com/ruimachado-orbit/warp/issues" class="btn btn-secondary">Report Issue</a>
+        </div>
+
+        <footer>
+            <p>Built with ❤️ using <a href="https://github.com/anthropics/agent-factory" style="color: #667eea;">Agent Factory</a></p>
+            <p>© 2026 Maio Labs. MIT License.</p>
+        </footer>
+    </div>
 </body>
 </html>
