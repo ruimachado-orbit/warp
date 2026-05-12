@@ -1,4 +1,4 @@
-.PHONY: help install test lint clean dev build release
+.PHONY: help install test lint clean dev build release deploy
 
 help: ## Show this help message
 	@echo 'Warp - Makefile commands'
@@ -8,6 +8,7 @@ help: ## Show this help message
 install: ## Install dependencies
 	@echo "📦 Installing dependencies..."
 	pip install -r requirements.txt
+	npm install
 	@echo "✅ Dependencies installed"
 
 install-dev: ## Install development dependencies
@@ -50,6 +51,7 @@ clean: ## Clean build artifacts
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete
 	find . -type d -name ".pytest_cache" -exec rm -rf {} + 2>/dev/null || true
+	rm -rf out/ .aws-sam/
 	@echo "✅ Cleaned"
 
 dev: ## Start development mode
@@ -100,5 +102,20 @@ setup: ## Initial project setup
 	@echo "  1. Edit .env with your API keys"
 	@echo "  2. Edit config/config.yaml with your settings"
 	@echo "  3. Run 'make dev' to start the agent"
+
+# Website deployment
+website-dev: ## Start website dev server
+	@npm run dev
+
+website-build: ## Build website for deployment
+	@npm run build
+
+deploy-stack: ## Deploy AWS SAM stack
+	@./scripts/deploy-stack.sh
+
+deploy-site: ## Deploy website to S3/CloudFront
+	@./scripts/publish-public.sh
+
+deploy: deploy-stack deploy-site ## Deploy both stack and website
 
 .DEFAULT_GOAL := help

@@ -34,19 +34,6 @@ echo "   Stack: $CLOUDFORMATION_STACK_NAME"
 echo "   Region: $AWS_REGION"
 echo "   Domain: ${SITE_HOSTNAME:-[none - using CloudFront default]}"
 
-# Create temporary parameter file with proper JSON escaping
-PARAMS_FILE=$(mktemp)
-trap "rm -f $PARAMS_FILE" EXIT
-
-cat > "$PARAMS_FILE" <<EOF
-SiteHostname="$SITE_HOSTNAME"
-AcmCertificateArn="$ACM_CERTIFICATE_ARN"
-AllowedOrigin="$ALLOWED_ORIGIN"
-ResendApiKey="$RESEND_API_KEY"
-ResendFrom="$RESEND_FROM"
-ResendTo="$RESEND_TO"
-EOF
-
 echo ""
 echo "📦 Building and deploying with SAM..."
 
@@ -56,7 +43,13 @@ sam deploy \
   --stack-name "$CLOUDFORMATION_STACK_NAME" \
   --region "$AWS_REGION" \
   --capabilities CAPABILITY_IAM \
-  --parameter-overrides "$(cat $PARAMS_FILE)" \
+  --parameter-overrides \
+    "SiteHostname=$SITE_HOSTNAME" \
+    "AcmCertificateArn=$ACM_CERTIFICATE_ARN" \
+    "AllowedOrigin=$ALLOWED_ORIGIN" \
+    "ResendApiKey=$RESEND_API_KEY" \
+    "ResendFrom=$RESEND_FROM" \
+    "ResendTo=$RESEND_TO" \
   --no-fail-on-empty-changeset \
   --resolve-s3
 

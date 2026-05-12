@@ -1,0 +1,24 @@
+{
+  "name": "warp",
+  "version": "0.1.0",
+  "description": "Autonomous customer support operations agent",
+  "type": "module",
+  "scripts": {
+    "dev": "npx http-server website -p 3002 -o",
+    "build": "node scripts/build-out.mjs",
+    "deploy:stack": "./scripts/deploy-stack.sh",
+    "deploy:site": "./scripts/publish-public.sh",
+    "deploy": "npm run deploy:stack && npm run deploy:site"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "customer-support",
+    "helpdesk"
+  ],
+  "author": "Maio Labs",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

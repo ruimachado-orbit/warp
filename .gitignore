@@ -64,6 +64,10 @@ Thumbs.db
 logs/
 *.log
 
+# AWS SAM
+.aws-sam/
+samconfig.toml
+
 # Project-specific
 config/config.yaml
 config/*.local.yaml
