@@ -1,51 +1,50 @@
-     1|agent:
-     2|  name: warp
-     3|  mode: support-ops
-     4|
-     5|llm:
-     6|  providers: [anthropic, openai, openrouter]
-     7|  default: anthropic
-     8|  max_tokens: 4096
-     9|  temperature: 0.2
-    10|
-    11|support:
-    12|  default_language: en
-    13|  safe_mode: true
-    14|  mutate_requires_execute_flag: true
-    15|  default_sla_hours:
-    16|    critical: 1
-    17|    high: 4
-    18|    medium: 24
-    19|    low: 72
-    20|  queues:
-    21|    billing: Billing / Finance Support
-    22|    bug: Technical Support L2
-    23|    access: Identity & Account Support
-    24|    how_to: Customer Education / L1 Support
-    25|    feature_request: Product Feedback Queue
-    26|    data_privacy: Privacy / Legal Ops
-    27|    integration: Integrations Support
-    28|    general: Customer Support L1
-    29|
-    30|integrations:
-    31|  zendesk:
-    32|    enabled: true
-    33|  intercom:
-    34|    enabled: true
-    35|  freshdesk:
-    36|    enabled: true
-    37|  salesforce_service:
-    38|    enabled: true
-    39|  hubspot_service:
-    40|    enabled: true
-    41|  jira_service:
-    42|    enabled: true
-    43|  front:
-    44|    enabled: true
-    45|  helpscout:
-    46|    enabled: true
-    47|  slack:
-    48|    enabled: true
-    49|  notion:
-    50|    enabled: true
-    51|
+agent:
+  name: warp
+  mode: support-ops
+
+llm:
+  providers: [anthropic, openai, openrouter]
+  default: anthropic
+  max_tokens: 4096
+  temperature: 0.2
+
+support:
+  default_language: en
+  safe_mode: true
+  mutate_requires_execute_flag: true
+  default_sla_hours:
+    critical: 1
+    high: 4
+    medium: 24
+    low: 72
+  queues:
+    billing: Billing / Finance Support
+    bug: Technical Support L2
+    access: Identity & Account Support
+    how_to: Customer Education / L1 Support
+    feature_request: Product Feedback Queue
+    data_privacy: Privacy / Legal Ops
+    integration: Integrations Support
+    general: Customer Support L1
+
+integrations:
+  zendesk:
+    enabled: true
+  intercom:
+    enabled: true
+  freshdesk:
+    enabled: true
+  salesforce_service:
+    enabled: true
+  hubspot_service:
+    enabled: true
+  jira_service:
+    enabled: true
+  front:
+    enabled: true
+  helpscout:
+    enabled: true
+  slack:
+    enabled: true
+  notion:
+    enabled: true
