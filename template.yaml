@@ -1,0 +1,169 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Warp static website - S3 + CloudFront + Lambda contact form
+
+Parameters:
+  SiteHostname:
+    Type: String
+    Default: warp.maiolabs.ai
+    Description: Custom domain for CloudFront (leave empty for default CloudFront URL)
+
+  AcmCertificateArn:
+    Type: String
+    Default: ''
+    Description: ACM certificate ARN in us-east-1 (required if SiteHostname is set)
+
+  AllowedOrigin:
+    Type: String
+    Default: https://warp.maiolabs.ai
+    Description: CORS allowed origin for Lambda function
+
+  ResendApiKey:
+    Type: String
+    NoEcho: true
+    Description: Resend API key for sending emails
+
+  ResendFrom:
+    Type: String
+    Default: hello@maiolabs.ai
+    Description: From email address (must be verified in Resend)
+
+  ResendTo:
+    Type: String
+    Default: hello@maiolabs.ai
+    Description: Notification email for form submissions
+
+Conditions:
+  HasCustomDomain: !Not [!Equals [!Ref SiteHostname, '']]
+
+Resources:
+  SiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub '${AWS::StackName}-site'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+
+  SiteOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub '${AWS::StackName}-oac'
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  SiteDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        DefaultRootObject: index.html
+        HttpVersion: http2and3
+        PriceClass: PriceClass_100
+
+        Aliases: !If
+          - HasCustomDomain
+          - [!Ref SiteHostname]
+          - !Ref AWS::NoValue
+
+        ViewerCertificate: !If
+          - HasCustomDomain
+          - AcmCertificateArn: !Ref AcmCertificateArn
+            SslSupportMethod: sni-only
+            MinimumProtocolVersion: TLSv1.2_2021
+          - CloudFrontDefaultCertificate: true
+
+        Origins:
+          - Id: S3Origin
+            DomainName: !GetAtt SiteBucket.RegionalDomainName
+            S3OriginConfig: {}
+            OriginAccessControlId: !Ref SiteOriginAccessControl
+
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD, OPTIONS]
+          CachedMethods: [GET, HEAD]
+          Compress: true
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6  # CachingOptimized
+
+  SiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref SiteBucket
+      PolicyDocument:
+        Statement:
+          - Sid: AllowCloudFrontServicePrincipalReadOnly
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub '${SiteBucket.Arn}/*'
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${SiteDistribution}'
+
+  RegisterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}-contact-form'
+      Runtime: nodejs20.x
+      Handler: index.handler
+      CodeUri: lambda/
+      Timeout: 10
+      Environment:
+        Variables:
+          RESEND_API_KEY: !Ref ResendApiKey
+          RESEND_FROM: !Ref ResendFrom
+          RESEND_TO: !Ref ResendTo
+          ALLOWED_ORIGIN: !Ref AllowedOrigin
+
+  RegisterFunctionUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      TargetFunctionArn: !Ref RegisterFunction
+      AuthType: NONE
+
+  RegisterFunctionUrlPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref RegisterFunction
+      Action: lambda:InvokeFunctionUrl
+      Principal: '*'
+      FunctionUrlAuthType: NONE
+
+Outputs:
+  PublicSiteUrl:
+    Description: CloudFront distribution URL
+    Value: !Sub 'https://${SiteDistribution.DomainName}'
+
+  PublicCustomUrl:
+    Description: Custom domain URL
+    Value: !If
+      - HasCustomDomain
+      - !Sub 'https://${SiteHostname}'
+      - 'N/A - no custom domain configured'
+
+  SiteBucketName:
+    Description: S3 bucket name for website content
+    Value: !Ref SiteBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-BucketName'
+
+  CloudFrontDistributionId:
+    Description: CloudFront distribution ID
+    Value: !Ref SiteDistribution
+    Export:
+      Name: !Sub '${AWS::StackName}-DistributionId'
+
+  RegisterFunctionUrl:
+    Description: Lambda Function URL for contact form
+    Value: !GetAtt RegisterFunctionUrl.FunctionUrl
+    Export:
+      Name: !Sub '${AWS::StackName}-RegisterFunctionUrl'
