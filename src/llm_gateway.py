@@ -62,6 +62,7 @@ def call_with_fallback(
     max_tokens: int = 16384,
     temperature: float = 0.7,
     json_output: bool = False,
+    model: Optional[str] = None,
 ) -> Dict:
     """
     Call LLM with automatic fallback across providers.
@@ -80,7 +81,7 @@ def call_with_fallback(
 
     for provider in providers:
         try:
-            result = _call_provider(provider, prompt, system, max_tokens, temperature, json_output)
+            result = _call_provider(provider, prompt, system, max_tokens, temperature, json_output, model)
             if result.get("ok"):
                 if failures:
                     result["warnings"] = failures
@@ -108,6 +109,7 @@ def _call_provider(
     max_tokens: int,
     temperature: float,
     json_output: bool,
+    model: Optional[str] = None,
 ) -> Dict:
     """Call a specific provider."""
     provider = _provider_id(provider)
@@ -116,16 +118,16 @@ def _call_provider(
         raise ValueError(f"Unknown provider: {provider}")
 
     if provider == "anthropic":
-        return _call_anthropic(prompt, system, max_tokens, temperature, json_output)
+        return _call_anthropic(prompt, system, max_tokens, temperature, json_output, model)
 
     if provider == "openai":
-        return _call_openai(prompt, system, max_tokens, temperature, json_output)
+        return _call_openai(prompt, system, max_tokens, temperature, json_output, model)
 
     if provider == "openrouter":
-        return _call_openrouter(prompt, system, max_tokens, temperature, json_output)
+        return _call_openrouter(prompt, system, max_tokens, temperature, json_output, model)
 
     if provider == "codex_app_server":
-        return _call_codex_app_server(prompt, system, max_tokens, temperature, json_output)
+        return _call_codex_app_server(prompt, system, max_tokens, temperature, json_output, model)
 
     raise NotImplementedError(f"Provider {provider} not implemented")
 
@@ -180,7 +182,7 @@ def _chat_completion(
     }
 
 
-def _call_anthropic(prompt: str, system: str, max_tokens: int, temperature: float, json_output: bool) -> Dict:
+def _call_anthropic(prompt: str, system: str, max_tokens: int, temperature: float, json_output: bool, model: Optional[str] = None) -> Dict:
     """Call Anthropic Claude API."""
     try:
         import anthropic
@@ -194,7 +196,7 @@ def _call_anthropic(prompt: str, system: str, max_tokens: int, temperature: floa
         messages = [{"role": "user", "content": prompt}]
 
         response = client.messages.create(
-            model="claude-sonnet-4-7",
+            model=model or "claude-sonnet-4-7",
             max_tokens=max_tokens,
             temperature=temperature,
             system=system or "You are a helpful AI assistant.",
@@ -214,7 +216,7 @@ def _call_anthropic(prompt: str, system: str, max_tokens: int, temperature: floa
         return {"ok": False, "error": str(e), "provider": "anthropic"}
 
 
-def _call_openai(prompt: str, system: str, max_tokens: int, temperature: float, json_output: bool) -> Dict:
+def _call_openai(prompt: str, system: str, max_tokens: int, temperature: float, json_output: bool, model: Optional[str] = None) -> Dict:
     """Call OpenAI API."""
     try:
         api_key = _env("OPENAI_API_KEY")
@@ -225,7 +227,7 @@ def _call_openai(prompt: str, system: str, max_tokens: int, temperature: float, 
             provider="openai",
             api_key=api_key,
             base_url=None,
-            model=_env("OPENAI_MODEL", "gpt-5.4-mini"),
+            model=model or _env("OPENAI_MODEL", "gpt-5.4-mini"),
             prompt=prompt,
             system=system,
             max_tokens=max_tokens,
@@ -236,7 +238,7 @@ def _call_openai(prompt: str, system: str, max_tokens: int, temperature: float, 
         return {"ok": False, "error": str(e), "provider": "openai"}
 
 
-def _call_openrouter(prompt: str, system: str, max_tokens: int, temperature: float, json_output: bool) -> Dict:
+def _call_openrouter(prompt: str, system: str, max_tokens: int, temperature: float, json_output: bool, model: Optional[str] = None) -> Dict:
     """Call OpenRouter through its OpenAI-compatible chat completions API."""
     try:
         api_key = _env("OPENROUTER_API_KEY")
@@ -252,7 +254,7 @@ def _call_openrouter(prompt: str, system: str, max_tokens: int, temperature: flo
             provider="openrouter",
             api_key=api_key,
             base_url="https://openrouter.ai/api/v1",
-            model=_env("OPENROUTER_MODEL", "deepseek/deepseek-v4-flash"),
+            model=model or _env("OPENROUTER_MODEL", "deepseek/deepseek-v4-flash"),
             prompt=prompt,
             system=system,
             max_tokens=max_tokens,
@@ -416,11 +418,11 @@ def _codex_collect_turn(messages: queue.Queue, turn_request_id: int, deadline: f
             raise RuntimeError(_codex_error_text(message))
 
 
-def _call_codex_app_server_stdio(prompt: str, system: str, max_tokens: int, temperature: float, json_output: bool) -> Dict:
+def _call_codex_app_server_stdio(prompt: str, system: str, max_tokens: int, temperature: float, json_output: bool, model: Optional[str] = None) -> Dict:
     """Call official Codex app-server over stdio JSON-RPC-like messages."""
     del max_tokens, temperature  # Codex app-server thread/start does not use these fields here.
 
-    model = _env("CODEX_APP_SERVER_MODEL", "gpt-5.5")
+    model = model or _env("CODEX_APP_SERVER_MODEL", "gpt-5.5")
     timeout = float(_env("CODEX_APP_SERVER_TIMEOUT", "300"))
     command = _env("CODEX_APP_SERVER_COMMAND", "codex")
     cwd = _env("CODEX_APP_SERVER_CWD") or os.getcwd()
@@ -522,12 +524,12 @@ def _call_codex_app_server_stdio(prompt: str, system: str, max_tokens: int, temp
                 process.kill()
 
 
-def _call_codex_app_server(prompt: str, system: str, max_tokens: int, temperature: float, json_output: bool) -> Dict:
+def _call_codex_app_server(prompt: str, system: str, max_tokens: int, temperature: float, json_output: bool, model: Optional[str] = None) -> Dict:
     """Call official Codex app-server using its direct app-server transport."""
     try:
         transport = _env("CODEX_APP_SERVER_URL", "stdio://") or "stdio://"
         if transport == "stdio://":
-            return _call_codex_app_server_stdio(prompt, system, max_tokens, temperature, json_output)
+            return _call_codex_app_server_stdio(prompt, system, max_tokens, temperature, json_output, model)
         raise ValueError(f"Unsupported Codex app-server transport: {transport}. Warp currently supports stdio://.")
     except Exception as e:
         return {"ok": False, "error": str(e), "provider": "codex_app_server"}

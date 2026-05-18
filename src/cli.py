@@ -1,7 +1,6 @@
 """Packaged Warp command-line interface."""
 
 import sys
-
 try:
     import typer
     from rich.console import Console
@@ -14,11 +13,13 @@ except ImportError:
 
 from llm_gateway import status as llm_status
 from orchestrator import orchestrate
+from evals.cli import register_eval_commands
 
 app = typer.Typer(
     help="Autonomous customer support operations agent for triage, classification, routing, drafting, knowledge lookup, SLA management, and helpdesk automation."
 )
 console = Console()
+register_eval_commands(app, console)
 
 
 @app.command()

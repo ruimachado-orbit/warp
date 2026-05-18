@@ -137,6 +137,26 @@ def test_openrouter_uses_openai_compatible_client(monkeypatch):
     assert client.requests[0]["response_format"] == {"type": "json_object"}
 
 
+def test_openrouter_accepts_explicit_model_override(monkeypatch):
+    install_fake_openai(monkeypatch)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
+    monkeypatch.setenv("OPENROUTER_MODEL", "ignored/model")
+
+    result = llm_gateway.call_with_fallback(
+        "hello",
+        providers=["openrouter"],
+        system="system",
+        max_tokens=50,
+        temperature=0.1,
+        json_output=True,
+        model="deepseek/deepseek-v4-flash",
+    )
+
+    assert result["ok"] is True
+    assert result["model"] == "deepseek/deepseek-v4-flash"
+    assert FakeOpenAI.instances[0].requests[0]["model"] == "deepseek/deepseek-v4-flash"
+
+
 def test_openai_uses_configurable_model(monkeypatch):
     install_fake_openai(monkeypatch)
     monkeypatch.setenv("OPENAI_API_KEY", "oa-key")
@@ -246,7 +266,7 @@ def test_codex_app_server_unsupported_transport_fails_provider_locally(monkeypat
 
 
 def test_provider_local_failure_allows_fallback_with_visible_warning(monkeypatch):
-    def fake_call_provider(provider, prompt, system, max_tokens, temperature, json_output):
+    def fake_call_provider(provider, prompt, system, max_tokens, temperature, json_output, model=None):
         if provider == "codex_app_server":
             return {"ok": False, "provider": "codex_app_server", "error": "nope"}
         if provider == "openai":
@@ -264,7 +284,7 @@ def test_provider_local_failure_allows_fallback_with_visible_warning(monkeypatch
 
 
 def test_all_provider_failures_include_provider_errors(monkeypatch):
-    def fake_call_provider(provider, prompt, system, max_tokens, temperature, json_output):
+    def fake_call_provider(provider, prompt, system, max_tokens, temperature, json_output, model=None):
         return {"ok": False, "provider": provider, "error": f"{provider} failed visibly"}
 
     monkeypatch.setattr(llm_gateway, "_call_provider", fake_call_provider)

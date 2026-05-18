@@ -21,7 +21,7 @@ setup(
     author_email="hello@maiolabs.com",
     url="https://github.com/ruimachado-orbit/warp",
     packages=find_packages(where="src"),
-    py_modules=["cli", "config", "llm_gateway", "orchestrator"],
+    py_modules=["cli", "config", "llm_gateway", "orchestrator", "ticket_model"],
     package_dir={"": "src"},
     python_requires=">=3.12",
     install_requires=REQUIREMENTS,
