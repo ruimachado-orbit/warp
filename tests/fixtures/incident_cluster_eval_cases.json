@@ -1,0 +1,488 @@
+{
+  "schema_version": "warp.incident_cluster_eval.v1",
+  "name": "Incident clustering eval fixture",
+  "description": "Five multi-ticket incidents plus unrelated singleton tickets for evaluating incident clustering with pairwise precision/recall.",
+  "tickets": [
+    {
+      "ticket_id": "T-024",
+      "subject": "How do I export Warp settings?",
+      "body": "Where do I export my keyboard shortcuts and theme settings so I can move them to a new laptop?",
+      "channel": "email",
+      "expected_incident_id": "singleton_export_settings_how_to",
+      "signals": [
+        "how_to",
+        "settings_export"
+      ]
+    },
+    {
+      "ticket_id": "T-008",
+      "subject": "Shared command library stale",
+      "body": "My shared command library is stale. I can see the latest entries on another machine, but this Mac keeps showing last week's Warp Drive contents.",
+      "channel": "email",
+      "expected_incident_id": "warp_drive_sync_stalled_macos",
+      "signals": [
+        "warp_drive",
+        "sync_stalled",
+        "macos",
+        "shared_commands"
+      ]
+    },
+    {
+      "ticket_id": "T-018",
+      "subject": "Cannot open terminal after update",
+      "body": "Warp will not stay open after the update. The dock icon bounces, a window flashes, then the app quits without an error dialog.",
+      "channel": "email",
+      "expected_incident_id": "terminal_crash_on_launch_gpu_renderer",
+      "signals": [
+        "crash_on_launch",
+        "gpu_renderer",
+        "terminal",
+        "macos_update"
+      ]
+    },
+    {
+      "ticket_id": "T-003",
+      "subject": "GitHub connect button loops after authorization",
+      "body": "The GitHub connect flow is looping. I see the authorize page, grant access, then land back at the start. No error message, just a loop.",
+      "channel": "email",
+      "expected_incident_id": "github_oauth_redirect_loop",
+      "signals": [
+        "github",
+        "oauth",
+        "redirect_loop",
+        "account_linking"
+      ]
+    },
+    {
+      "ticket_id": "T-005",
+      "subject": "Warp Drive commands stopped syncing on macOS",
+      "body": "After updating Warp this morning, my shared Warp Drive commands no longer sync. The sidebar spinner never finishes and teammates can see commands that I cannot.",
+      "channel": "email",
+      "expected_incident_id": "warp_drive_sync_stalled_macos",
+      "signals": [
+        "warp_drive",
+        "sync_stalled",
+        "macos",
+        "shared_commands"
+      ]
+    },
+    {
+      "ticket_id": "T-011",
+      "subject": "Webhook delivery lag for Slack channel",
+      "body": "Slack notifications from Warp are lagging badly. The webhook test succeeds but real alerts arrive much later than expected.",
+      "channel": "email",
+      "expected_incident_id": "slack_webhook_delivery_delays",
+      "signals": [
+        "slack",
+        "webhook",
+        "delayed_notifications",
+        "duplicates"
+      ]
+    },
+    {
+      "ticket_id": "T-014",
+      "subject": "SCIM provisioning failing with forbidden error",
+      "body": "Our SCIM sync shows successful pushes in Okta, but Warp rejects the users as forbidden. Existing SSO users can still log in.",
+      "channel": "email",
+      "expected_incident_id": "sso_scim_provisioning_403",
+      "signals": [
+        "sso",
+        "scim",
+        "okta",
+        "403",
+        "provisioning"
+      ]
+    },
+    {
+      "ticket_id": "T-006",
+      "subject": "Drive sync spinner stuck forever",
+      "body": "Warp Drive has been stuck syncing for over an hour on my MacBook. New notebooks and workflows from the team do not appear locally.",
+      "channel": "email",
+      "expected_incident_id": "warp_drive_sync_stalled_macos",
+      "signals": [
+        "warp_drive",
+        "sync_stalled",
+        "macos",
+        "shared_commands"
+      ]
+    },
+    {
+      "ticket_id": "T-004",
+      "subject": "OAuth callback from GitHub not sticking",
+      "body": "Several developers in our workspace cannot link GitHub today. The OAuth callback appears to succeed but Warp never records the connection.",
+      "channel": "email",
+      "expected_incident_id": "github_oauth_redirect_loop",
+      "signals": [
+        "github",
+        "oauth",
+        "redirect_loop",
+        "account_linking"
+      ]
+    },
+    {
+      "ticket_id": "T-012",
+      "subject": "Incident alerts duplicated in Slack",
+      "body": "We received three copies of the same Warp incident alert in our #ops channel. This started today and only affects the Slack webhook.",
+      "channel": "email",
+      "expected_incident_id": "slack_webhook_delivery_delays",
+      "signals": [
+        "slack",
+        "webhook",
+        "delayed_notifications",
+        "duplicates"
+      ]
+    },
+    {
+      "ticket_id": "T-025",
+      "subject": "Need copy of renewal contract",
+      "body": "Can you send us a copy of the signed renewal contract for our procurement archive?",
+      "channel": "email",
+      "expected_incident_id": "singleton_contract_copy_request",
+      "signals": [
+        "billing",
+        "contract",
+        "renewal"
+      ]
+    },
+    {
+      "ticket_id": "T-015",
+      "subject": "SSO login blocked for newly assigned users",
+      "body": "People newly assigned to the Warp app in Okta hit a 403 page after SAML login. Removing and re-adding the assignment did not help.",
+      "channel": "email",
+      "expected_incident_id": "sso_scim_provisioning_403",
+      "signals": [
+        "sso",
+        "scim",
+        "okta",
+        "403",
+        "provisioning"
+      ]
+    },
+    {
+      "ticket_id": "T-017",
+      "subject": "Warp crashes immediately on launch",
+      "body": "After installing the latest Warp update, the app opens a blank terminal window and crashes within two seconds. macOS crash report mentions the renderer.",
+      "channel": "email",
+      "expected_incident_id": "terminal_crash_on_launch_gpu_renderer",
+      "signals": [
+        "crash_on_launch",
+        "gpu_renderer",
+        "terminal",
+        "macos_update"
+      ]
+    },
+    {
+      "ticket_id": "T-023",
+      "subject": "Delete my personal data",
+      "body": "I want to permanently delete my Warp account and all personal data associated with my email address under GDPR.",
+      "channel": "email",
+      "expected_incident_id": "singleton_gdpr_delete_account",
+      "signals": [
+        "gdpr",
+        "privacy",
+        "delete_data"
+      ]
+    },
+    {
+      "ticket_id": "T-020",
+      "subject": "Terminal window disappears right away",
+      "body": "The terminal window appears and disappears immediately every time I launch Warp. Reinstalling did not fix it.",
+      "channel": "email",
+      "expected_incident_id": "terminal_crash_on_launch_gpu_renderer",
+      "signals": [
+        "crash_on_launch",
+        "gpu_renderer",
+        "terminal",
+        "macos_update"
+      ]
+    },
+    {
+      "ticket_id": "T-022",
+      "subject": "Feature request: offline AI history",
+      "body": "I would like Warp AI history to be available offline when I am traveling. This is not blocking us, just a product suggestion.",
+      "channel": "email",
+      "expected_incident_id": "singleton_offline_ai_history_request",
+      "signals": [
+        "feature_request",
+        "offline",
+        "ai_history"
+      ]
+    },
+    {
+      "ticket_id": "T-019",
+      "subject": "Crash report references GPU process",
+      "body": "My Warp client crashes at startup. The Apple crash report includes GPU process and renderer initialization frames.",
+      "channel": "email",
+      "expected_incident_id": "terminal_crash_on_launch_gpu_renderer",
+      "signals": [
+        "crash_on_launch",
+        "gpu_renderer",
+        "terminal",
+        "macos_update"
+      ]
+    },
+    {
+      "ticket_id": "T-009",
+      "subject": "Slack alert arrived 40 minutes late",
+      "body": "Our Warp alert webhook to Slack is delayed today. The incident notification eventually posted but it was around 40 minutes after the event.",
+      "channel": "email",
+      "expected_incident_id": "slack_webhook_delivery_delays",
+      "signals": [
+        "slack",
+        "webhook",
+        "delayed_notifications",
+        "duplicates"
+      ]
+    },
+    {
+      "ticket_id": "T-002",
+      "subject": "Cannot finish GitHub integration setup",
+      "body": "Our team is trying to enable the GitHub integration. After approving the OAuth app, the callback returns to Warp but the integration still says not connected.",
+      "channel": "email",
+      "expected_incident_id": "github_oauth_redirect_loop",
+      "signals": [
+        "github",
+        "oauth",
+        "redirect_loop",
+        "account_linking"
+      ]
+    },
+    {
+      "ticket_id": "T-016",
+      "subject": "Okta SCIM users not created in workspace",
+      "body": "Okta says SCIM provisioning completed, but the users are not present in the Warp workspace and receive access denied on login.",
+      "channel": "email",
+      "expected_incident_id": "sso_scim_provisioning_403",
+      "signals": [
+        "sso",
+        "scim",
+        "okta",
+        "403",
+        "provisioning"
+      ]
+    },
+    {
+      "ticket_id": "T-021",
+      "subject": "Need VAT added to March invoice",
+      "body": "Please reissue our March invoice with our company VAT number and billing address. This is only for our finance records.",
+      "channel": "email",
+      "expected_incident_id": "singleton_invoice_vat_reissue",
+      "signals": [
+        "billing",
+        "vat",
+        "invoice"
+      ]
+    },
+    {
+      "ticket_id": "T-010",
+      "subject": "Duplicate Slack messages from the Warp webhook",
+      "body": "Every automation alert from Warp is posting twice in Slack. The duplicated messages have the same payload and timestamp range.",
+      "channel": "email",
+      "expected_incident_id": "slack_webhook_delivery_delays",
+      "signals": [
+        "slack",
+        "webhook",
+        "delayed_notifications",
+        "duplicates"
+      ]
+    },
+    {
+      "ticket_id": "T-007",
+      "subject": "Team snippets missing after latest update",
+      "body": "Since the latest macOS client update, team snippets are missing from Warp Drive. Restarting the app and signing out did not refresh them.",
+      "channel": "email",
+      "expected_incident_id": "warp_drive_sync_stalled_macos",
+      "signals": [
+        "warp_drive",
+        "sync_stalled",
+        "macos",
+        "shared_commands"
+      ]
+    },
+    {
+      "ticket_id": "T-001",
+      "subject": "GitHub OAuth keeps sending me back to login",
+      "body": "When I click Connect GitHub from Warp Drive, the GitHub authorization page appears, I approve it, and then Warp drops me back on the same login screen. I have tried Chrome and Safari.",
+      "channel": "email",
+      "expected_incident_id": "github_oauth_redirect_loop",
+      "signals": [
+        "github",
+        "oauth",
+        "redirect_loop",
+        "account_linking"
+      ]
+    },
+    {
+      "ticket_id": "T-013",
+      "subject": "New Okta users cannot access Warp",
+      "body": "We provisioned three new engineers through Okta SCIM but Warp returns a 403 when they try to sign in through SSO.",
+      "channel": "email",
+      "expected_incident_id": "sso_scim_provisioning_403",
+      "signals": [
+        "sso",
+        "scim",
+        "okta",
+        "403",
+        "provisioning"
+      ]
+    }
+  ],
+  "expected_clusters": [
+    {
+      "incident_id": "github_oauth_redirect_loop",
+      "kind": "incident",
+      "summary": "GitHub OAuth authorization redirects users back to the login screen instead of completing account linking.",
+      "signals": [
+        "github",
+        "oauth",
+        "redirect_loop",
+        "account_linking"
+      ],
+      "ticket_ids": [
+        "T-001",
+        "T-002",
+        "T-003",
+        "T-004"
+      ]
+    },
+    {
+      "incident_id": "warp_drive_sync_stalled_macos",
+      "kind": "incident",
+      "summary": "Warp Drive sync stalls on macOS after update, leaving shared commands missing or outdated.",
+      "signals": [
+        "warp_drive",
+        "sync_stalled",
+        "macos",
+        "shared_commands"
+      ],
+      "ticket_ids": [
+        "T-005",
+        "T-006",
+        "T-007",
+        "T-008"
+      ]
+    },
+    {
+      "incident_id": "slack_webhook_delivery_delays",
+      "kind": "incident",
+      "summary": "Slack webhook notifications for Warp alerts are delayed or delivered multiple times.",
+      "signals": [
+        "slack",
+        "webhook",
+        "delayed_notifications",
+        "duplicates"
+      ],
+      "ticket_ids": [
+        "T-009",
+        "T-010",
+        "T-011",
+        "T-012"
+      ]
+    },
+    {
+      "incident_id": "sso_scim_provisioning_403",
+      "kind": "incident",
+      "summary": "SSO/SCIM provisioning through Okta fails with 403, preventing new team members from accessing Warp.",
+      "signals": [
+        "sso",
+        "scim",
+        "okta",
+        "403",
+        "provisioning"
+      ],
+      "ticket_ids": [
+        "T-013",
+        "T-014",
+        "T-015",
+        "T-016"
+      ]
+    },
+    {
+      "incident_id": "terminal_crash_on_launch_gpu_renderer",
+      "kind": "incident",
+      "summary": "Warp terminal crashes on launch after an update, likely tied to GPU renderer initialization.",
+      "signals": [
+        "crash_on_launch",
+        "gpu_renderer",
+        "terminal",
+        "macos_update"
+      ],
+      "ticket_ids": [
+        "T-017",
+        "T-018",
+        "T-019",
+        "T-020"
+      ]
+    },
+    {
+      "incident_id": "singleton_invoice_vat_reissue",
+      "kind": "singleton",
+      "summary": "Customer requests a VAT-corrected invoice reissue.",
+      "signals": [
+        "billing",
+        "vat",
+        "invoice"
+      ],
+      "ticket_ids": [
+        "T-021"
+      ]
+    },
+    {
+      "incident_id": "singleton_offline_ai_history_request",
+      "kind": "singleton",
+      "summary": "Customer requests an offline AI history feature.",
+      "signals": [
+        "feature_request",
+        "offline",
+        "ai_history"
+      ],
+      "ticket_ids": [
+        "T-022"
+      ]
+    },
+    {
+      "incident_id": "singleton_gdpr_delete_account",
+      "kind": "singleton",
+      "summary": "Customer asks to delete personal data under GDPR.",
+      "signals": [
+        "gdpr",
+        "privacy",
+        "delete_data"
+      ],
+      "ticket_ids": [
+        "T-023"
+      ]
+    },
+    {
+      "incident_id": "singleton_export_settings_how_to",
+      "kind": "singleton",
+      "summary": "Customer asks how to export local Warp settings.",
+      "signals": [
+        "how_to",
+        "settings_export"
+      ],
+      "ticket_ids": [
+        "T-024"
+      ]
+    },
+    {
+      "incident_id": "singleton_contract_copy_request",
+      "kind": "singleton",
+      "summary": "Customer asks for a copy of a renewal contract.",
+      "signals": [
+        "billing",
+        "contract",
+        "renewal"
+      ],
+      "ticket_ids": [
+        "T-025"
+      ]
+    }
+  ],
+  "evaluation_notes": {
+    "primary_metric": "pairwise clustering precision/recall/F1 over ticket_id pairs",
+    "positive_pairs": "tickets sharing the same expected_incident_id",
+    "negative_pairs": "tickets with different expected_incident_id values, including singleton tickets",
+    "singleton_policy": "singleton tickets should remain alone unless a future fixture intentionally links them to an incident"
+  }
+}
