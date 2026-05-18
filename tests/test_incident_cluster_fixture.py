@@ -9,8 +9,8 @@ def test_incident_cluster_fixture_has_expected_shape():
     payload = json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
 
     assert payload["schema_version"] == "warp.incident_cluster_eval.v1"
-    assert len(payload["tickets"]) == 25
-    assert len(payload["expected_clusters"]) == 10
+    assert len(payload["tickets"]) == 30
+    assert len(payload["expected_clusters"]) == 15
 
     ticket_ids = [ticket["ticket_id"] for ticket in payload["tickets"]]
     assert len(ticket_ids) == len(set(ticket_ids))
@@ -23,8 +23,8 @@ def test_incident_cluster_fixture_has_expected_shape():
     ]
 
     assert len(incident_clusters) == 5
-    assert all(len(cluster["ticket_ids"]) == 4 for cluster in incident_clusters)
-    assert len(singleton_clusters) == 5
+    assert not all(len(c["ticket_ids"]) == len(incident_clusters[0]["ticket_ids"]) for c in incident_clusters)
+    assert len(singleton_clusters) == 10
     assert all(len(cluster["ticket_ids"]) == 1 for cluster in singleton_clusters)
 
     known_ticket_ids = set(ticket_ids)

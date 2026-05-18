@@ -119,6 +119,13 @@ def _call_provider(
     if provider not in PROVIDERS:
         raise ValueError(f"Unknown provider: {provider}")
 
+    if json_schema is not None and provider not in {"openai", "openrouter"}:
+        return {
+            "ok": False,
+            "provider": provider,
+            "error": f"json_schema is not supported by provider {provider}",
+        }
+
     if provider == "anthropic":
         return _call_anthropic(prompt, system, max_tokens, temperature, json_output, model)
 

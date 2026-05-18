@@ -37,13 +37,13 @@ def test_build_cluster_prompt_contains_only_ticket_payload():
 
     assert prompt.startswith("Input ticket IDs:")
     assert "Tickets:" in prompt
-    assert "T-024" in prompt
-    assert "keyboard shortcuts" in prompt
+    assert "T-014" in prompt
+    assert "billing tab" in prompt
     assert "expected_incident_id" not in prompt
-    assert "singleton_export_settings_how_to" not in prompt
-    assert "warp_drive_sync_stalled_macos" not in prompt
-    assert "settings_export" not in prompt
-    assert "sync_stalled" not in prompt
+    assert "singleton_billing_page_loading" not in prompt
+    assert "github_oauth_redirect_loop" not in prompt
+    assert "page_load" not in prompt
+    assert "redirect_loop" not in prompt
     assert "Task:" not in prompt
     assert "Return one JSON object" not in prompt
     assert "Rules:" not in prompt
@@ -117,6 +117,7 @@ def test_evaluate_file_calls_openrouter_deepseek_and_scores(monkeypatch):
                 "temperature": temperature,
                 "json_output": json_output,
                 "model": model,
+                "json_schema": json_schema,
             }
         )
         return {
@@ -141,6 +142,7 @@ def test_evaluate_file_calls_openrouter_deepseek_and_scores(monkeypatch):
             "temperature": 0.0,
             "json_output": True,
             "model": "deepseek/deepseek-v4-flash",
+            "json_schema": incident_clusterer.OUTPUT_JSON_SCHEMA,
         }
     ]
     assert calls[0]["prompt"].startswith("Input ticket IDs:")
@@ -148,9 +150,9 @@ def test_evaluate_file_calls_openrouter_deepseek_and_scores(monkeypatch):
     assert "Return one JSON object" not in calls[0]["prompt"]
     assert incident_clusterer.OUTPUT_SCHEMA_VERSION not in calls[0]["prompt"]
     assert summary["schema_version"] == "warp.incident_cluster_eval_result.v1"
-    assert summary["total_tickets"] == 25
-    assert summary["expected_cluster_count"] == 10
-    assert summary["predicted_cluster_count"] == 10
+    assert summary["total_tickets"] == 30
+    assert summary["expected_cluster_count"] == 15
+    assert summary["predicted_cluster_count"] == 15
     assert summary["ok"] is True
     assert summary["metrics"]["pairwise_f1"] == 1.0
     assert summary["metadata"]["provider"] == "openrouter"

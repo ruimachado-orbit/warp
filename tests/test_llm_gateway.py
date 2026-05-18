@@ -174,6 +174,49 @@ def test_openai_uses_configurable_model(monkeypatch):
     assert "response_format" not in client.requests[0]
 
 
+def test_json_schema_requires_supported_provider(monkeypatch):
+    install_fake_openai(monkeypatch)
+    monkeypatch.setenv("OPENAI_API_KEY", "oa-key")
+    schema = {
+        "name": "structured_response",
+        "schema": {
+            "type": "object",
+            "properties": {"answer": {"type": "string"}},
+            "required": ["answer"],
+            "additionalProperties": False,
+        },
+    }
+
+    unsupported = llm_gateway._call_provider("anthropic", "hello", "system", 75, 0.3, True, json_schema=schema)
+    assert unsupported == {
+        "ok": False,
+        "provider": "anthropic",
+        "error": "json_schema is not supported by provider anthropic",
+    }
+
+    result = llm_gateway.call_with_fallback(
+        "hello",
+        providers=["anthropic", "openai"],
+        system="system",
+        max_tokens=75,
+        temperature=0.3,
+        json_output=True,
+        json_schema=schema,
+    )
+
+    assert result["ok"] is True
+    assert result["provider"] == "openai"
+    assert result["warnings"] == [{"provider": "anthropic", "error": "json_schema is not supported by provider anthropic"}]
+    assert FakeOpenAI.instances[0].requests[0]["response_format"] == {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "structured_response",
+            "strict": True,
+            "schema": schema["schema"],
+        },
+    }
+
+
 def test_codex_alias_dispatch_uses_app_server_stdio(monkeypatch):
     monkeypatch.delenv("CODEX_APP_SERVER_URL", raising=False)
     processes = install_fake_codex_process(monkeypatch, codex_success_lines(("alias response",)))
