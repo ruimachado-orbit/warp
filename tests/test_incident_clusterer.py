@@ -107,7 +107,7 @@ def test_evaluate_file_calls_openrouter_deepseek_and_scores(monkeypatch):
     fixture = incident_clusterer.load_incident_fixture(FIXTURE_PATH)
     calls = []
 
-    def fake_call_with_fallback(prompt, providers, system, max_tokens, temperature, json_output, model=None):
+    def fake_call_with_fallback(prompt, providers, system, max_tokens, temperature, json_output, model=None, json_schema=None):
         calls.append(
             {
                 "prompt": prompt,

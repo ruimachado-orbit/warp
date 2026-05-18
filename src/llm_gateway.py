@@ -63,6 +63,7 @@ def call_with_fallback(
     temperature: float = 0.7,
     json_output: bool = False,
     model: Optional[str] = None,
+    json_schema: Optional[Dict] = None,
 ) -> Dict:
     """
     Call LLM with automatic fallback across providers.
@@ -81,7 +82,7 @@ def call_with_fallback(
 
     for provider in providers:
         try:
-            result = _call_provider(provider, prompt, system, max_tokens, temperature, json_output, model)
+            result = _call_provider(provider, prompt, system, max_tokens, temperature, json_output, model, json_schema)
             if result.get("ok"):
                 if failures:
                     result["warnings"] = failures
@@ -110,6 +111,7 @@ def _call_provider(
     temperature: float,
     json_output: bool,
     model: Optional[str] = None,
+    json_schema: Optional[Dict] = None,
 ) -> Dict:
     """Call a specific provider."""
     provider = _provider_id(provider)
@@ -121,10 +123,10 @@ def _call_provider(
         return _call_anthropic(prompt, system, max_tokens, temperature, json_output, model)
 
     if provider == "openai":
-        return _call_openai(prompt, system, max_tokens, temperature, json_output, model)
+        return _call_openai(prompt, system, max_tokens, temperature, json_output, model, json_schema)
 
     if provider == "openrouter":
-        return _call_openrouter(prompt, system, max_tokens, temperature, json_output, model)
+        return _call_openrouter(prompt, system, max_tokens, temperature, json_output, model, json_schema)
 
     if provider == "codex_app_server":
         return _call_codex_app_server(prompt, system, max_tokens, temperature, json_output, model)
@@ -148,6 +150,7 @@ def _chat_completion(
     temperature: float,
     json_output: bool,
     default_headers: Optional[Dict[str, str]] = None,
+    json_schema: Optional[Dict] = None,
 ) -> Dict:
     import openai
 
@@ -168,7 +171,16 @@ def _chat_completion(
         "max_tokens": max_tokens,
         "temperature": temperature,
     }
-    if json_output:
+    if json_schema:
+        request["response_format"] = {
+            "type": "json_schema",
+            "json_schema": {
+                "name": json_schema.get("name", "response"),
+                "strict": True,
+                "schema": json_schema["schema"],
+            },
+        }
+    elif json_output:
         request["response_format"] = {"type": "json_object"}
 
     response = client.chat.completions.create(**request)
@@ -216,7 +228,7 @@ def _call_anthropic(prompt: str, system: str, max_tokens: int, temperature: floa
         return {"ok": False, "error": str(e), "provider": "anthropic"}
 
 
-def _call_openai(prompt: str, system: str, max_tokens: int, temperature: float, json_output: bool, model: Optional[str] = None) -> Dict:
+def _call_openai(prompt: str, system: str, max_tokens: int, temperature: float, json_output: bool, model: Optional[str] = None, json_schema: Optional[Dict] = None) -> Dict:
     """Call OpenAI API."""
     try:
         api_key = _env("OPENAI_API_KEY")
@@ -233,12 +245,13 @@ def _call_openai(prompt: str, system: str, max_tokens: int, temperature: float, 
             max_tokens=max_tokens,
             temperature=temperature,
             json_output=json_output,
+            json_schema=json_schema,
         )
     except Exception as e:
         return {"ok": False, "error": str(e), "provider": "openai"}
 
 
-def _call_openrouter(prompt: str, system: str, max_tokens: int, temperature: float, json_output: bool, model: Optional[str] = None) -> Dict:
+def _call_openrouter(prompt: str, system: str, max_tokens: int, temperature: float, json_output: bool, model: Optional[str] = None, json_schema: Optional[Dict] = None) -> Dict:
     """Call OpenRouter through its OpenAI-compatible chat completions API."""
     try:
         api_key = _env("OPENROUTER_API_KEY")
@@ -261,6 +274,7 @@ def _call_openrouter(prompt: str, system: str, max_tokens: int, temperature: flo
             temperature=temperature,
             json_output=json_output,
             default_headers=headers,
+            json_schema=json_schema,
         )
     except Exception as e:
         return {"ok": False, "error": str(e), "provider": "openrouter"}

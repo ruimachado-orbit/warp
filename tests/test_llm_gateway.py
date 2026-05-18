@@ -266,7 +266,7 @@ def test_codex_app_server_unsupported_transport_fails_provider_locally(monkeypat
 
 
 def test_provider_local_failure_allows_fallback_with_visible_warning(monkeypatch):
-    def fake_call_provider(provider, prompt, system, max_tokens, temperature, json_output, model=None):
+    def fake_call_provider(provider, prompt, system, max_tokens, temperature, json_output, model=None, json_schema=None):
         if provider == "codex_app_server":
             return {"ok": False, "provider": "codex_app_server", "error": "nope"}
         if provider == "openai":
@@ -284,7 +284,7 @@ def test_provider_local_failure_allows_fallback_with_visible_warning(monkeypatch
 
 
 def test_all_provider_failures_include_provider_errors(monkeypatch):
-    def fake_call_provider(provider, prompt, system, max_tokens, temperature, json_output, model=None):
+    def fake_call_provider(provider, prompt, system, max_tokens, temperature, json_output, model=None, json_schema=None):
         return {"ok": False, "provider": provider, "error": f"{provider} failed visibly"}
 
     monkeypatch.setattr(llm_gateway, "_call_provider", fake_call_provider)

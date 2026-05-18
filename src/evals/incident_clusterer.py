@@ -74,6 +74,35 @@ _CONTENT_HASH = hashlib.sha256(_SYSTEM_PROMPT_TEMPLATE.encode()).hexdigest()[:8]
 PROMPT_VERSION = f"warp.incident_clusterer.prompt.{_PROMPT_BASE_VERSION}.{_CONTENT_HASH}"
 SYSTEM_PROMPT = _SYSTEM_PROMPT_TEMPLATE.replace("__PROMPT_VERSION__", PROMPT_VERSION)
 
+OUTPUT_JSON_SCHEMA = {
+    "name": "incident_cluster_output",
+    "schema": {
+        "type": "object",
+        "properties": {
+            "schema_version": {"type": "string", "enum": [OUTPUT_SCHEMA_VERSION]},
+            "prompt_version": {"type": "string", "enum": [PROMPT_VERSION]},
+            "clusters": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "incident_id": {"type": "string"},
+                        "kind": {"type": "string", "enum": ["incident", "singleton"]},
+                        "summary": {"type": "string"},
+                        "ticket_ids": {"type": "array", "items": {"type": "string"}},
+                        "confidence": {"type": "number"},
+                        "signals": {"type": "array", "items": {"type": "string"}},
+                    },
+                    "required": ["incident_id", "kind", "summary", "ticket_ids", "confidence", "signals"],
+                    "additionalProperties": False,
+                },
+            },
+        },
+        "required": ["schema_version", "prompt_version", "clusters"],
+        "additionalProperties": False,
+    },
+}
+
 
 class IncidentClustererObservabilityError(ValueError):
     """Clusterer parse/validation error carrying provider observability."""
@@ -285,6 +314,7 @@ def _cluster_tickets_with_observability(
         temperature=0.0,
         json_output=True,
         model=model,
+        json_schema=OUTPUT_JSON_SCHEMA,
     )
     if not result.get("ok"):
         raise RuntimeError(f"LLM provider {provider} failed: {result.get('error') or 'unknown error'}")
