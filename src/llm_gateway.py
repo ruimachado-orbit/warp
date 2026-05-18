@@ -280,6 +280,9 @@ def _codex_send(stdin, message: Dict) -> None:
     stdin.flush()
 
 
+_CODEX_EOF = object()
+
+
 def _codex_reader(stdout, messages: queue.Queue) -> None:
     try:
         while True:
@@ -289,6 +292,8 @@ def _codex_reader(stdout, messages: queue.Queue) -> None:
             messages.put(line)
     except Exception as exc:  # pragma: no cover - defensive for real process I/O failures
         messages.put(exc)
+    finally:
+        messages.put(_CODEX_EOF)
 
 
 def _codex_next_message(messages: queue.Queue, deadline: float) -> Dict:
@@ -300,6 +305,9 @@ def _codex_next_message(messages: queue.Queue, deadline: float) -> Dict:
         item = messages.get(timeout=remaining)
     except queue.Empty as exc:
         raise TimeoutError("Timed out waiting for Codex app-server response") from exc
+
+    if item is _CODEX_EOF:
+        raise RuntimeError("Codex app-server process closed stdout before sending a response")
 
     if isinstance(item, Exception):
         raise RuntimeError(f"Codex app-server stream error: {item}")

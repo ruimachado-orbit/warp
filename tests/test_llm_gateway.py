@@ -104,7 +104,7 @@ def codex_success_lines(text_parts=("hello ", "world")):
 
 def install_fake_codex_process(monkeypatch, stdout_lines=None):
     processes = []
-    lines = stdout_lines or codex_success_lines()
+    lines = codex_success_lines() if stdout_lines is None else stdout_lines
 
     def fake_popen(cmd, **kwargs):
         process = FakeProcess(cmd, kwargs, list(lines))
@@ -222,6 +222,17 @@ def test_codex_app_server_stdio_uses_env_overrides(monkeypatch):
     assert thread_start["params"]["model"] == "gpt-custom"
     assert thread_start["params"]["sandbox"] == "workspace-write"
     assert thread_start["params"]["approvalPolicy"] == "on-request"
+
+
+def test_codex_app_server_early_exit_fails_promptly(monkeypatch):
+    monkeypatch.delenv("CODEX_APP_SERVER_URL", raising=False)
+    monkeypatch.setenv("CODEX_APP_SERVER_TIMEOUT", "0.5")
+    install_fake_codex_process(monkeypatch, stdout_lines=[])
+
+    result = llm_gateway._call_provider("codex_app_server", "hello", None, 100, 0.2, False)
+
+    assert result["ok"] is False
+    assert "closed stdout before sending a response" in result["error"]
 
 
 def test_codex_app_server_unsupported_transport_fails_provider_locally(monkeypatch):
