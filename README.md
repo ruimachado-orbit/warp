@@ -65,6 +65,31 @@ python3 src/tools/zendesk_tool.py note 12345 "Customer reports production outage
 python3 src/tools/knowledge_tool.py search "refund policy enterprise cancellation"
 ```
 
+## Eval harness
+
+Warp includes a ticket eval harness for rule-based no-LLM triage, AI ticket labels, rule-vs-AI comparisons, run-scoped artifacts, and a static HTML dashboard. See [Ticket eval and observability system](docs/TICKET_EVAL_OBSERVABILITY.md) for the full operational guide.
+
+Incident clustering evals group related support tickets into incidents rather than classifying labels. See [Incident clustering eval](docs/INCIDENT_CLUSTERING_EVAL.md) for the focused guide. The fixture lives in `tests/fixtures/incident_cluster_eval_cases.json`: five 4-ticket incidents plus five unrelated singleton tickets. Run it with `warp eval-cluster-incidents tests/fixtures/incident_cluster_eval_cases.json --provider openrouter --model deepseek/deepseek-v4-flash --output eval-runs/incident-clusters-openrouter.json`. Regenerate it with `python3 scripts/generate-synthetic-tickets.py --kind incidents --count 5 --tickets-per-incident 4 --singletons 5 --output tests/fixtures/incident_cluster_eval_cases.json`.
+
+Common commands:
+
+```bash
+# Run the single canonical ticket eval fixture
+warp eval tests/fixtures/ticket_eval_cases.json --artifacts-dir eval-runs --tickets-dir eval-runs
+
+# AI labels and rule-vs-AI comparison
+# Note: eval-ai/eval-compare exit 1 when labels do not match expectations,
+# but still write artifacts for inspection.
+warp eval-ai tests/fixtures/ticket_eval_cases.json --provider openrouter --artifacts-dir eval-runs --tickets-dir eval-runs
+warp eval-compare tests/fixtures/ticket_eval_cases.json --provider openrouter --output eval-runs/compare-openrouter.json --tickets-dir eval-runs
+
+# Convert older top-level artifacts and regenerate the dashboard
+warp eval-store --runs-dir eval-runs --fixtures tests/fixtures/ticket_eval_cases.json --tickets-dir eval-runs
+warp eval-dashboard --runs-dir eval-runs --output eval-runs/dashboard.html
+```
+
+`eval-runs/` is ignored by Git. Open `eval-runs/dashboard.html` directly in a browser after regenerating it.
+
 ## Tool map
 
 | Tool | File | Purpose |
@@ -100,7 +125,6 @@ Codex uses the official Codex app-server protocol, not an OpenAI-compatible `/v1
 ## Roadmap
 
 - OAuth flows for providers that support them.
-- Incident clustering across tickets.
 - CSAT/churn-risk dashboard.
 - Macro performance analytics.
 - Multi-brand routing rules.
