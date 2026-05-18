@@ -1,5 +1,7 @@
 # Axsupport — Git Ignore
 
+/eval-runs
+
 # Environment
 .env
 .env.local

@@ -1,0 +1,908 @@
+{
+  "cases": [
+    {
+      "case_id": "critical_bug_outage",
+      "name": "Critical production outage routes to L2",
+      "ticket": {
+        "id": "T-001",
+        "subject": "Production is down",
+        "body": "All users are blocked by an error.",
+        "source": "synthetic"
+      },
+      "expected": {
+        "category": "bug",
+        "severity": "critical",
+        "priority": "critical",
+        "sentiment": "neutral",
+        "language": "en",
+        "route_to": "Technical Support L2",
+        "sla_hours": 1,
+        "requires_human": true,
+        "tags_contains": [
+          "bug",
+          "critical"
+        ]
+      }
+    },
+    {
+      "case_id": "billing_negative_invoice",
+      "name": "Negative invoice issue routes to billing",
+      "ticket": {
+        "id": "T-002",
+        "subject": "Wrong invoice charge",
+        "body": "I am angry about this incorrect invoice charge.",
+        "source": "synthetic"
+      },
+      "expected": {
+        "category": "billing",
+        "sentiment": "negative",
+        "route_to": "Billing / Finance Support",
+        "requires_human": true,
+        "tags_contains": [
+          "billing",
+          "negative"
+        ]
+      }
+    },
+    {
+      "case_id": "billing_invoice_tax_update",
+      "ticket": {
+        "id": "SYN-001",
+        "subject": "Need company VAT added to my Warp invoice",
+        "body": "Hi Warp support, our March invoice was issued without our company VAT number and billing address. The subscription is under ops@northstar.dev and invoice INV-48291. Could you reissue it with Northstar Labs Ltd, VAT GB123456789, and the address on our account?",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "billing",
+        "severity": "low",
+        "priority": "low",
+        "sentiment": "neutral",
+        "language": "en",
+        "route_to": "Billing / Finance Support",
+        "sla_hours": 24,
+        "requires_human": true,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "billing"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "Invoice tax details update",
+      "description": "Covers a customer requesting corrected billing details on an invoice.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "bug_terminal_crash_after_update",
+      "ticket": {
+        "id": "SYN-002",
+        "subject": "Warp crashes immediately after latest update on macOS",
+        "body": "After updating Warp this morning, the app opens for about two seconds and then quits. I am on macOS 14.5 on an M2 MacBook Pro. I tried rebooting and reinstalling, but it still crashes before I can open any terminal session. This is blocking my work.",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "bug",
+        "severity": "high",
+        "priority": "high",
+        "sentiment": "negative",
+        "language": "en",
+        "route_to": "Technical Support L2",
+        "sla_hours": 24,
+        "requires_human": true,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "bug"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "Crash after update",
+      "description": "Covers a high-impact Warp app crash after a recent update.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "access_team_workspace_locked_out",
+      "ticket": {
+        "id": "SYN-003",
+        "subject": "Cannot access our Warp team workspace",
+        "body": "I was invited to our company Warp team workspace yesterday, but when I sign in with my Google account it says I do not belong to any workspace. My teammate resent the invite twice. My email is maya.chen@exampleco.com and the workspace name is ExampleCo Engineering.",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "access",
+        "severity": "high",
+        "priority": "high",
+        "sentiment": "negative",
+        "language": "en",
+        "route_to": "Identity & Account Support",
+        "sla_hours": 24,
+        "requires_human": true,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "access"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "Team workspace lockout",
+      "description": "Covers an account access issue for a team workspace member.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "how_to_export_warp_settings",
+      "ticket": {
+        "id": "SYN-004",
+        "subject": "How do I copy my Warp settings to a new laptop?",
+        "body": "I am setting up a new Mac and want to bring over my Warp themes, keybindings, workflows, and launch configurations. Is there an official export or sync process I should use, or do I need to copy files manually?",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "how_to",
+        "severity": "low",
+        "priority": "low",
+        "sentiment": "neutral",
+        "language": "en",
+        "route_to": "Customer Education / L1 Support",
+        "sla_hours": 24,
+        "requires_human": true,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "how_to"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "Export settings question",
+      "description": "Covers a how-to question about moving Warp settings to another machine.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "feature_request_offline_ai_history",
+      "ticket": {
+        "id": "SYN-005",
+        "subject": "Feature request: offline access to AI command history",
+        "body": "I use Warp on flights and in customer environments without internet. It would be helpful if my recent Warp AI command history and saved prompts were available offline, even if new AI responses still require a connection. Is this on the roadmap?",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "feature_request",
+        "severity": "medium",
+        "priority": "medium",
+        "sentiment": "positive",
+        "language": "en",
+        "route_to": "Product Feedback Queue",
+        "sla_hours": 24,
+        "requires_human": true,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "feature_request"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "Offline history request",
+      "description": "Covers a product suggestion for offline access to Warp AI history.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "privacy_delete_account_data",
+      "ticket": {
+        "id": "SYN-006",
+        "subject": "Request to delete my Warp account and personal data",
+        "body": "Please delete my Warp account and all personal data associated with alex.rivera@example.org. I no longer use the product and would like confirmation when my profile, telemetry, and stored cloud data have been removed. I am located in California.",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "data_privacy",
+        "severity": "high",
+        "priority": "high",
+        "sentiment": "neutral",
+        "language": "en",
+        "route_to": "Privacy / Legal Ops",
+        "sla_hours": 24,
+        "requires_human": true,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "data_privacy"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "Account data deletion",
+      "description": "Covers a privacy request to delete user account data.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "integration_github_oauth_loop",
+      "ticket": {
+        "id": "SYN-007",
+        "subject": "GitHub integration keeps sending me back to authorize",
+        "body": "I am trying to connect Warp to GitHub from the integrations page. GitHub says the authorization succeeds, but Warp returns me to the same connect button and never shows the integration as active. This happens in Chrome and Safari for my work GitHub org.",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "integration",
+        "severity": "medium",
+        "priority": "medium",
+        "sentiment": "negative",
+        "language": "en",
+        "route_to": "Integrations Support",
+        "sla_hours": 24,
+        "requires_human": true,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "integration"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "GitHub OAuth loop",
+      "description": "Covers a failed third-party integration authorization flow.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "general_student_plan_question",
+      "ticket": {
+        "id": "SYN-008",
+        "subject": "Does Warp offer a student discount?",
+        "body": "Hello, I am a computer science student and have been using Warp for my coursework. I could not find a clear answer on whether there is a student plan or education discount. Can you let me know what options are available?",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "general",
+        "severity": "low",
+        "priority": "low",
+        "sentiment": "positive",
+        "language": "en",
+        "route_to": "Customer Support L1",
+        "sla_hours": 24,
+        "requires_human": true,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "general"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "Student plan inquiry",
+      "description": "Covers a general pre-sales question about available plans.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "billing_duplicate_charge",
+      "ticket": {
+        "id": "SYN-009",
+        "subject": "I was charged twice for my Warp Pro subscription",
+        "body": "My card shows two $20 charges from Warp on May 15 for the same Pro subscription. The account email is jordan.patel@example.net. I only upgraded once, so please check whether this was a duplicate charge and refund one of them if needed.",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "billing",
+        "severity": "high",
+        "priority": "high",
+        "sentiment": "negative",
+        "language": "en",
+        "route_to": "Billing / Finance Support",
+        "sla_hours": 24,
+        "requires_human": true,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "duplicate_charge"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "Duplicate subscription charge",
+      "description": "Covers a billing complaint about an apparent duplicate payment.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "bug_warp_drive_sync_missing",
+      "ticket": {
+        "id": "SYN-010",
+        "subject": "Warp Drive workflows not syncing to second machine",
+        "body": "I created several Warp Drive workflows on my desktop yesterday, but none of them appear on my laptop even though both devices are signed into the same account. New themes sync correctly, but workflows stay missing after restart and sign-out/sign-in. Can someone investigate?",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "bug",
+        "severity": "medium",
+        "priority": "medium",
+        "sentiment": "negative",
+        "language": "en",
+        "route_to": "Technical Support L2",
+        "sla_hours": 24,
+        "requires_human": true,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "sync_issue"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "Warp Drive sync missing",
+      "description": "Covers a sync-related product bug where saved items disappear across devices.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "duplicate_invoice_refund_request",
+      "ticket": {
+        "id": "SYN-011",
+        "subject": "Duplicate subscription charge on latest invoice",
+        "body": "Hi Warp support, our May invoice shows two subscription charges for the same workspace plan. This looks like a billing issue and I need a refund for the duplicate payment. I'm frustrated because our finance team is closing the books today.",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "billing",
+        "severity": "medium",
+        "priority": "medium",
+        "sentiment": "negative",
+        "language": "en",
+        "route_to": "Billing / Finance Support",
+        "sla_hours": 24,
+        "requires_human": true,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "billing"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "Duplicate invoice refund",
+      "description": "Covers a billing ticket about a duplicate charge and refund request.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "all_users_crash_on_launch",
+      "ticket": {
+        "id": "SYN-012",
+        "subject": "Critical error: Warp crashes for all users",
+        "body": "Since this morning Warp is down for our team. The app shows an error and then crash loops for all users, so nobody can use the terminal. Please treat this as urgent because our engineers are blocked.",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "bug",
+        "severity": "critical",
+        "priority": "critical",
+        "sentiment": "neutral",
+        "language": "en",
+        "route_to": "Technical Support L2",
+        "sla_hours": 1,
+        "requires_human": true,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "bug"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "All users crash",
+      "description": "Covers a critical product bug where all users are blocked by a crash.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "sso_cannot_access_account",
+      "ticket": {
+        "id": "SYN-013",
+        "subject": "Cannot access admin account after SSO change",
+        "body": "We enabled SSO yesterday and now I cannot access my admin account. The login page redirects me back to the start and my invite link says the account is locked. I need access restored for our workspace.",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "access",
+        "severity": "critical",
+        "priority": "critical",
+        "sentiment": "neutral",
+        "language": "en",
+        "route_to": "Identity & Account Support",
+        "sla_hours": 1,
+        "requires_human": true,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "access"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "SSO access blocked",
+      "description": "Covers an identity ticket where an admin cannot access an account after SSO changes.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "configure_team_settings_question",
+      "ticket": {
+        "id": "SYN-014",
+        "subject": "How do I configure default terminal settings for my team?",
+        "body": "Hi, how do I configure shared Warp settings for new team members? I looked for a setup guide or tutorial but could not find the exact steps. Thanks for pointing me in the right direction.",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "how_to",
+        "severity": "low",
+        "priority": "low",
+        "sentiment": "positive",
+        "language": "en",
+        "route_to": "Customer Education / L1 Support",
+        "sla_hours": 72,
+        "requires_human": false,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "how_to"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "Configure team settings",
+      "description": "Covers a low-severity how-to question about configuring team defaults.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "slack_webhook_failure",
+      "ticket": {
+        "id": "SYN-015",
+        "subject": "Slack webhook integration failed after API token rotation",
+        "body": "Our Slack integration stopped sending deployment notifications after we rotated the API token. The webhook test returns a failed response, and we need help figuring out whether the token or callback URL is incorrect.",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "integration",
+        "severity": "medium",
+        "priority": "medium",
+        "sentiment": "neutral",
+        "language": "en",
+        "route_to": "Integrations Support",
+        "sla_hours": 24,
+        "requires_human": false,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "integration"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "Slack webhook failure",
+      "description": "Covers an integration support case involving failed Slack webhook delivery.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "gdpr_delete_personal_data",
+      "ticket": {
+        "id": "SYN-016",
+        "subject": "GDPR request: delete my personal data",
+        "body": "Please delete my data associated with this email address and confirm when the personal data removal is complete. I am making this request under GDPR and would also like to know whether any subprocessors retain a copy.",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "data_privacy",
+        "severity": "low",
+        "priority": "low",
+        "sentiment": "neutral",
+        "language": "en",
+        "route_to": "Privacy / Legal Ops",
+        "sla_hours": 72,
+        "requires_human": true,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "data_privacy"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "GDPR deletion request",
+      "description": "Covers a data privacy request to delete personal data under GDPR.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "feature_request_command_palette",
+      "ticket": {
+        "id": "SYN-017",
+        "subject": "Feature request: pinned commands in the palette",
+        "body": "I love Warp and would like a feature that lets me pin frequently used commands at the top of the command palette. This would be a nice to have enhancement for teams that run the same scripts every day.",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "feature_request",
+        "severity": "low",
+        "priority": "low",
+        "sentiment": "positive",
+        "language": "en",
+        "route_to": "Product Feedback Queue",
+        "sla_hours": 72,
+        "requires_human": false,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "feature_request"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "Command palette request",
+      "description": "Covers a low-priority product feedback request for a new command palette feature.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "renewal_contract_copy_request",
+      "ticket": {
+        "id": "SYN-018",
+        "subject": "Need a copy of our renewal paperwork",
+        "body": "Hello, our procurement team is preparing next quarter's budget and needs the signed renewal paperwork for our Warp workspace. Could you send the document that shows the annual amount, renewal date, and purchaser details?",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "billing",
+        "severity": "low",
+        "priority": "low",
+        "sentiment": "neutral",
+        "language": "en",
+        "route_to": "Billing / Finance Support",
+        "sla_hours": 72,
+        "requires_human": false,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "billing"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "Renewal contract copy",
+      "description": "Covers a semantic billing request that may not include the strongest billing trigger words.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "workspace_invitation_bounce",
+      "ticket": {
+        "id": "SYN-019",
+        "subject": "New teammate never receives workspace invitation",
+        "body": "We added a new engineer to the Warp workspace, but she never receives the email invitation even after we resend it. Her company mailbox works for other services, and we need her onboarded before Monday.",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "access",
+        "severity": "high",
+        "priority": "high",
+        "sentiment": "neutral",
+        "language": "en",
+        "route_to": "Identity & Account Support",
+        "sla_hours": 4,
+        "requires_human": true,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "access"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "Invitation bounce",
+      "description": "Covers a semantic account access issue where workspace invitations are not reaching a new employee.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    },
+    {
+      "case_id": "general_plan_comparison",
+      "ticket": {
+        "id": "SYN-020",
+        "subject": "Choosing the right Warp option for a small team",
+        "body": "Hi, we are a five-person startup evaluating Warp for shared terminal workflows. We are trying to understand which option is best for collaboration and whether there is a trial path before we roll it out.",
+        "source": "synthetic",
+        "channel": "email",
+        "requester_id": null,
+        "account_id": null,
+        "created_at": null,
+        "language": "en",
+        "metadata": {
+          "synthetic": true
+        },
+        "schema_version": "warp.ticket_input.v1"
+      },
+      "expected": {
+        "category": "general",
+        "severity": "low",
+        "priority": "low",
+        "sentiment": "neutral",
+        "language": "en",
+        "route_to": "Customer Support L1",
+        "sla_hours": 72,
+        "requires_human": false,
+        "allowed_categories": [],
+        "allowed_severities": [],
+        "tags_exact": null,
+        "tags_contains": [
+          "general"
+        ],
+        "min_confidence": null,
+        "metadata": {},
+        "schema_version": "warp.expected_classification.v1"
+      },
+      "name": "Plan comparison inquiry",
+      "description": "Covers a general pre-sales inquiry asking which Warp option fits a small team.",
+      "metadata": {
+        "generator": "llm"
+      },
+      "schema_version": "warp.ticket_eval_case.v1"
+    }
+  ]
+}

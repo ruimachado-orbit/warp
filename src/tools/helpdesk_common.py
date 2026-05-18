@@ -6,7 +6,20 @@ from typing import Any, Dict, Optional
 
 import requests
 
-TIMEOUT = int(os.getenv("AXSUPPORT_HTTP_TIMEOUT", "30"))
+
+def _int_env(default: int, *keys: str) -> int:
+    for key in keys:
+        value = os.getenv(key)
+        if not value:
+            continue
+        try:
+            return int(value)
+        except ValueError:
+            return default
+    return default
+
+
+TIMEOUT = _int_env(30, "WARP_HTTP_TIMEOUT", "AXSUPPORT_HTTP_TIMEOUT")
 
 
 def env_status(required: list[str]) -> dict:

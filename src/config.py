@@ -9,8 +9,11 @@ except Exception:  # pragma: no cover
     yaml = None
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG_PATH = Path(os.getenv("AXSUPPORT_CONFIG", ROOT / "config" / "config.yaml"))
 EXAMPLE_CONFIG_PATH = ROOT / "config" / "config.yaml.example"
+
+ENV_ALIASES = {
+    "llm.providers": ("LLM_PROVIDER_ORDER", "LLM_PROVIDERS"),
+}
 
 
 def _load_env_file() -> None:
@@ -25,6 +28,14 @@ def _load_env_file() -> None:
         os.environ.setdefault(key.strip(), value.strip())
 
 
+def _env_first(*keys: str) -> str | None:
+    for key in keys:
+        value = os.getenv(key)
+        if value:
+            return value
+    return None
+
+
 def _load_yaml(path: Path) -> dict:
     if not path.exists() or yaml is None:
         return {}
@@ -33,13 +44,15 @@ def _load_yaml(path: Path) -> dict:
 
 
 _load_env_file()
+CONFIG_PATH = Path(_env_first("WARP_CONFIG", "AXSUPPORT_CONFIG") or ROOT / "config" / "config.yaml")
 _CONFIG = _load_yaml(CONFIG_PATH) or _load_yaml(EXAMPLE_CONFIG_PATH)
 
 
 def get(key: str, default=None):
     env_key = key.upper().replace(".", "_")
-    if env_key in os.environ:
-        value = os.environ[env_key]
+    env_keys = (*ENV_ALIASES.get(key, ()), env_key)
+    value = _env_first(*env_keys)
+    if value is not None:
         if isinstance(default, int):
             try:
                 return int(value)
