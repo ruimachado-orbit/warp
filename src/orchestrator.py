@@ -125,7 +125,7 @@ def _format_tool_results(results: list[dict]) -> str:
 def llm_synthesize(goal: str, tool_results: list[dict], provider: str | None = None, quiet: bool = False) -> str:
     system = load_system_prompt()
     prompt = f"""Customer support goal/request:\n{goal}\n\nTool results:\n{_format_tool_results(tool_results)}\n\nReturn a concise operations-ready answer with: classification, queue/owner, SLA, recommended next action, draft customer reply if relevant, and any missing information. Never claim an external update was made unless a tool result proves it. If a tool is not configured, say what env vars are missing."""
-    providers = get("llm.providers", ["anthropic", "openai", "openrouter"])
+    providers = get("llm.providers", ["anthropic", "openai", "openrouter", "codex_app_server"])
     if provider:
         providers = [provider] + [p for p in providers if p != provider]
     if not quiet:
