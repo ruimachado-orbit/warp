@@ -34,7 +34,7 @@ Collaboration / knowledge:
 ## Quick start
 
 ```bash
-cd /Users/ruimachado/Code/warp
+cd warp
 cp .env.example .env
 cp config/config.yaml.example config/config.yaml
 python3 -m venv .venv
@@ -90,6 +90,12 @@ python3 src/tools/knowledge_tool.py search "refund policy enterprise cancellatio
 ## Configuration
 
 Use `.env.example` for required credentials and `config/config.yaml.example` for queues, SLA defaults, provider order, and integration toggles.
+Runtime env names use the Warp prefix: `WARP_CONFIG` for an optional config-file override and `WARP_HTTP_TIMEOUT` for helpdesk HTTP requests. The legacy `AXSUPPORT_CONFIG` and `AXSUPPORT_HTTP_TIMEOUT` aliases remain supported for existing installs. LLM fallback order is configured with `LLM_PROVIDER_ORDER`; `LLM_PROVIDERS` remains supported as an alias.
+
+LLM fallback supports `anthropic`, `openai`, `openrouter`, and `codex_app_server`.
+OpenAI uses `OPENAI_API_KEY` with `OPENAI_MODEL` defaulting to `gpt-5.4-mini`.
+OpenRouter uses `OPENROUTER_API_KEY` with `OPENROUTER_MODEL` defaulting to `deepseek/deepseek-v4-flash`.
+Codex uses the official Codex app-server protocol, not an OpenAI-compatible `/v1/chat/completions` endpoint and not a `codex exec` fallback. By default Warp launches `codex app-server --listen stdio://` for each Codex provider call. `CODEX_APP_SERVER_URL` is a transport URL and defaults to `stdio://`; Warp currently supports the `stdio://` transport. Configure `CODEX_APP_SERVER_COMMAND`, `CODEX_APP_SERVER_MODEL`, `CODEX_APP_SERVER_TIMEOUT`, `CODEX_APP_SERVER_CWD`, `CODEX_APP_SERVER_SANDBOX`, and `CODEX_APP_SERVER_APPROVAL_POLICY` as needed.
 
 ## Roadmap
 

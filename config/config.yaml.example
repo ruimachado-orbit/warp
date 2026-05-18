@@ -3,9 +3,9 @@ agent:
   mode: support-ops
 
 llm:
-  providers: [anthropic, openai, openrouter]
+  providers: [anthropic, openai, openrouter, codex_app_server]
   default: anthropic
-  max_tokens: 4096
+  max_tokens: 16384
   temperature: 0.2
 
 support:
