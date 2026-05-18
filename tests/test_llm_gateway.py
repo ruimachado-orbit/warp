@@ -234,7 +234,7 @@ def test_codex_app_server_unsupported_transport_fails_provider_locally(monkeypat
     assert "Unsupported Codex app-server transport" in result["error"]
 
 
-def test_provider_local_failure_allows_fallback(monkeypatch):
+def test_provider_local_failure_allows_fallback_with_visible_warning(monkeypatch):
     def fake_call_provider(provider, prompt, system, max_tokens, temperature, json_output):
         if provider == "codex_app_server":
             return {"ok": False, "provider": "codex_app_server", "error": "nope"}
@@ -249,6 +249,21 @@ def test_provider_local_failure_allows_fallback(monkeypatch):
     assert result["ok"] is True
     assert result["provider"] == "openai"
     assert result["text"] == "fallback"
+    assert result["warnings"] == [{"provider": "codex_app_server", "error": "nope"}]
+
+
+def test_all_provider_failures_include_provider_errors(monkeypatch):
+    def fake_call_provider(provider, prompt, system, max_tokens, temperature, json_output):
+        return {"ok": False, "provider": provider, "error": f"{provider} failed visibly"}
+
+    monkeypatch.setattr(llm_gateway, "_call_provider", fake_call_provider)
+
+    result = llm_gateway.call_with_fallback("hello", providers=["codex_app_server", "openai"])
+
+    assert result["ok"] is False
+    assert "codex_app_server: codex_app_server failed visibly" in result["error"]
+    assert "openai: openai failed visibly" in result["error"]
+    assert len(result["warnings"]) == 2
 
 
 def test_status_includes_openrouter_and_codex_app_server(monkeypatch):

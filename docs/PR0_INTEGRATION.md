@@ -1,12 +1,13 @@
 # PR0 Integration Baseline
 
-PR0 integrates three preparatory workstreams into one baseline for later ticket-model PRs:
+PR0 integrates four preparatory workstreams into one baseline for later ticket-model PRs:
 
 1. `fix/packaging-cli-entrypoint`
 2. `fix/config-env-consistency`
 3. `feat/provider-openrouter-codex-app-server`
+4. `fix/llm-provider-failure-visibility`
 
-The goal is to make Warp install and run consistently, preserve existing environment-variable compatibility, and expand LLM provider fallback without changing ticket models or helpdesk domain behavior.
+The goal is to make Warp install and run consistently, preserve existing environment-variable compatibility, expand LLM provider fallback, and surface provider errors clearly without changing ticket models or helpdesk domain behavior.
 
 ## What Changed
 
@@ -45,6 +46,12 @@ Preferred env names win over legacy aliases when both are set. Empty env values 
 - Added Codex app-server transport settings: `CODEX_APP_SERVER_URL` defaults to `stdio://`, `CODEX_APP_SERVER_COMMAND` defaults to `codex`, and timeout/cwd/sandbox/approval-policy env vars control the `thread/start` request.
 - Extended default fallback order to `anthropic`, `openai`, `openrouter`, `codex_app_server`.
 
+### LLM provider failure visibility
+
+- `call_with_fallback` now tracks per-provider failures and attaches them as `warnings` on the successful result (or includes all errors in the final failure message).
+- The orchestrator surfaces a clear `LLM provider error: ...` message when a single forced provider fails, instead of silently falling through to the rule-based synthesizer.
+- Default `max_tokens` increased from 4096 to 16384 across gateway, orchestrator, and config examples.
+
 ## Affected Files
 
 - `.env.example`: documents preferred env names, legacy aliases, provider order, OpenRouter, and Codex app server settings.
@@ -54,12 +61,13 @@ Preferred env names win over legacy aliases when both are set. Empty env values 
 - `bin/axsupport-cli`: delegates to the packaged CLI while remaining executable for existing workflows.
 - `src/cli.py`: hosts packaged Typer commands.
 - `src/config.py`: resolves preferred env vars and legacy aliases.
-- `src/llm_gateway.py`: implements OpenRouter, direct Codex app-server stdio integration, provider aliases, model env vars, and shared OpenAI-compatible calls for OpenAI/OpenRouter.
-- `src/orchestrator.py`: includes `codex_app_server` in the default LLM provider fallback list.
+- `src/llm_gateway.py`: implements OpenRouter, direct Codex app-server stdio integration, provider aliases, model env vars, shared OpenAI-compatible calls for OpenAI/OpenRouter, and per-provider failure tracking with warning propagation.
+- `src/orchestrator.py`: includes `codex_app_server` in the default LLM provider fallback list; surfaces single-provider errors instead of silent fallthrough to rule-based synthesis.
 - `src/tools/helpdesk_common.py`: resolves preferred and legacy HTTP timeout env vars.
 - `tests/test_cli.py`: covers CLI commands and packaging metadata.
 - `tests/test_config_env.py`: covers preferred env vars, legacy aliases, and precedence.
-- `tests/test_llm_gateway.py`: covers OpenAI-compatible providers, model overrides, Codex aliases, mocked app-server stdio protocol, unsupported transport failures, provider fallback, and status output.
+- `tests/test_llm_gateway.py`: covers OpenAI-compatible providers, model overrides, Codex aliases, mocked app-server stdio protocol, unsupported transport failures, provider fallback with warning propagation, all-provider-failure error detail, and status output.
+- `tests/test_orchestrator.py`: covers default tool routing and single-provider error visibility.
 
 ## Runtime Behavior
 

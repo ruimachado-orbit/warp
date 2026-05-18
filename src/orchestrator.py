@@ -130,11 +130,18 @@ def llm_synthesize(goal: str, tool_results: list[dict], provider: str | None = N
         providers = [provider] + [p for p in providers if p != provider]
     if not quiet:
         print("\n🤖 Synthesizing support plan...")
-    result = call_with_fallback(prompt, providers=providers, system=system, max_tokens=get("llm.max_tokens", 4096), temperature=get("llm.temperature", 0.2))
+    result = call_with_fallback(prompt, providers=providers, system=system, max_tokens=get("llm.max_tokens", 16384), temperature=get("llm.temperature", 0.2))
+    warnings = result.get("warnings") or []
+    if warnings and not quiet:
+        for warning in warnings:
+            print(f"   ⚠ {warning.get('provider')}: {warning.get('error')}")
     if result.get("ok"):
         if not quiet:
             print(f"   ✓ Using {result.get('provider')}/{result.get('model')}")
         return result["text"]
+    if provider or len(providers) == 1:
+        error = result.get("error") or "LLM provider failed"
+        return f"LLM provider error: {error}"
     return _synthesize_logic(tool_results)
 
 

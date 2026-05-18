@@ -59,7 +59,7 @@ def call_with_fallback(
     prompt: str,
     providers: List[str] = None,
     system: str = None,
-    max_tokens: int = 4096,
+    max_tokens: int = 16384,
     temperature: float = 0.7,
     json_output: bool = False,
 ) -> Dict:
@@ -76,17 +76,29 @@ def call_with_fallback(
         }
     """
     providers = providers or DEFAULT_PROVIDER_ORDER
+    failures = []
 
     for provider in providers:
         try:
             result = _call_provider(provider, prompt, system, max_tokens, temperature, json_output)
             if result.get("ok"):
+                if failures:
+                    result["warnings"] = failures
                 return result
+            failure = {
+                "provider": result.get("provider") or _provider_id(provider),
+                "error": result.get("error") or "Provider returned an unsuccessful response",
+            }
+            failures.append(failure)
+            log.warning("%s failed: %s", failure["provider"], failure["error"])
         except Exception as e:
-            log.warning(f"{provider} failed: {e}")
+            failure = {"provider": _provider_id(provider), "error": str(e)}
+            failures.append(failure)
+            log.warning("%s failed: %s", failure["provider"], failure["error"])
             continue
 
-    return {"ok": False, "error": "All providers failed", "text": ""}
+    error_details = "; ".join(f"{item['provider']}: {item['error']}" for item in failures)
+    return {"ok": False, "error": f"All providers failed: {error_details}" if error_details else "All providers failed", "text": "", "warnings": failures}
 
 
 def _call_provider(
